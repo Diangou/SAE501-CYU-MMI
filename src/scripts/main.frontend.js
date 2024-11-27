@@ -5,6 +5,7 @@ import "/src/styles/tailwind.css";
 import "/src/styles/scroll-shadow.css";
 
 import "./store-scroll-position.utils";
+import "./async-form.js"
 
 if (process.env.NODE_ENV === "development") {
     await import("./profiler-bar");

@@ -53,4 +53,9 @@ router.get("/a-propos(.html)?", routeName("about"), async (_req, res) => {
     });
 });
 
+
+router.get("/nous-contacter", async (req, res) => {
+    res.render("pages/front-end/contact.njk");
+})
+
 export default router;
