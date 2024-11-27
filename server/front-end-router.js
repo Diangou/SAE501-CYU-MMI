@@ -58,4 +58,12 @@ router.get("/nous-contacter", async (req, res) => {
     res.render("pages/front-end/contact.njk");
 })
 
+router.get("/lieux", async (req, res) => {
+    res.render("pages/front-end/lieux.njk");
+})
+
+router.get("/sur-les-medias", async (req, res) => {
+    res.render("pages/front-end/sur-les-medias.njk");
+})
+
 export default router;
