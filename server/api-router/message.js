@@ -17,11 +17,11 @@ router.post(`/${base}`, async (req, res) => {
     } catch (error) {
         res.status(400).json({
             errors: [
-                ...Object.values(error?.errors).map((item) => item.message)
+                ...Object.values(error?.errors).map((item) => item.message),
             ],
-        })
+        });
     }
-})
+});
 
 router.get(`/${base}`, async (req, res) => {
     const page = Math.max(1, Number(req.query.page) || 1);
@@ -56,7 +56,7 @@ router.get(`/${base}`, async (req, res) => {
             ],
         });
     }
-})
+});
 
 
 
