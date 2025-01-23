@@ -9,7 +9,8 @@ const base = "messages";
 
 
 router.post(`/${base}`, async (req, res) => {
-    const ressource = new Message(req.body);
+console.log(req.body)
+    const ressource = new Message({...req.body});
 
     try {
         await ressource.save();
