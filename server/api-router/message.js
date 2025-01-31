@@ -9,20 +9,23 @@ const base = "messages";
 
 
 router.post(`/${base}`, async (req, res) => {
-console.log(req.body)
-    const ressource = new Message({...req.body});
+    console.log("Données reçues:", req.body); // Vérifier ce qui est envoyé
+
+    const ressource = new Message({
+        ...req.body,
+        identity: req.body.je_suis, // S'assurer que "je_suis" est bien stocké sous "identity"
+    });
 
     try {
         await ressource.save();
         res.status(201).json(ressource);
     } catch (error) {
         res.status(400).json({
-            errors: [
-                ...Object.values(error?.errors).map((item) => item.message)
-            ],
-        })
+            errors: Object.values(error?.errors || {}).map(item => item.message),
+        });
     }
-})
+});
+
 
 router.get(`/${base}`, async (req, res) => {
     const page = Math.max(1, Number(req.query.page) || 1);
