@@ -62,6 +62,28 @@ router.get(`/${base}`, async (req, res) => {
     }
 });
 
+router.get(`/${base}/:id([a-f0-9]{24})`, async (req, res) => {
+    try {
+        const message = await Message.findById(req.params.id);
+        
+        if (!message) {
+            return res.status(404).json({
+                errors: ["Message non trouvé"],
+            });
+        }
+
+        res.status(200).json(message);
+    } catch (error) {
+        res.status(400).json({
+            errors: [
+                ...Object.values(
+                    error?.errors || [{ message: error?.message || "Il y a eu un problème" }]
+                ).map(val => val.message),
+            ],
+        });
+    }
+});
+
 
 
 export default router;
