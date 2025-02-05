@@ -8,6 +8,8 @@ import parseManifest from "#server/utils/parse-manifest.js";
 // Routers
 import SAERouter from "./sae.js";
 import articleRouter from "./article.js";
+import messageRouter from "./message.js";
+import authorRouter from "./author.js";
 
 const router = express.Router();
 
@@ -27,6 +29,8 @@ router.use(async (_req, res, next) => {
 
 router.use(SAERouter);
 router.use(articleRouter);
+router.use(messageRouter);
+router.use(authorRouter);
 
 router.get("/", routeName("admin"), async (req, res) => {
     const queryParamsSAEs = querystring.stringify({ per_page: 5 });
@@ -44,6 +48,20 @@ router.get("/", routeName("admin"), async (req, res) => {
     };
     const listArticles = await axios(optionsArticles);
 
+    const queryParamsMessages = querystring.stringify({ per_page: 5 });
+    const optionsMessages = {
+        method: "GET",
+        url: `${res.locals.base_url}/api/messages?${queryParamsMessages}`,
+    };
+    const listMessages = await axios(optionsMessages);
+
+    const queryParamsAuthors = querystring.stringify({ per_page: 5 });
+    const optionsAuthors = {
+        method: "GET",
+        url: `${res.locals.base_url}/api/messages?${queryParamsAuthors}`,
+    };
+    const listAuthors = await axios(optionsAuthors);
+
     res.render("pages/back-end/index.njk", {
         list_saes: {
             data: listSAEs.data.data,
@@ -52,6 +70,14 @@ router.get("/", routeName("admin"), async (req, res) => {
         list_articles: {
             data: listArticles.data.data,
             count: listArticles.data.count,
+        },
+        list_messages: {
+            data: listMessages.data.data,
+            count: listMessages.data.count,
+        },
+        list_authors: {
+            data: listAuthors.data.data,
+            count: listAuthors.data.count,
         },
     });
 });

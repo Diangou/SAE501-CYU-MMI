@@ -1,20 +1,67 @@
 {% extends "layouts/front-end/base.njk" %}
 
+{% set bubble_color = "orange" %}
+
+{% block title %}Contact{% endblock %}
+
 {% block main %}
+<h2 class="text-3xl font-bold mb-1">Plus d’infos sur la formation ?</h2>
+<h2 class="text-3xl font-bold mb-6">Contactez-nous !</h2>
 
-<form actions="" data-async-form>
-    <div> 
-        <label for="firstName">Prénom</label>
-        <input type="text" id="firstName" name="firstName">
-        <p class="hidden" data-error-message="firstName">Prénom requis</p>
+<p class="mb-8" style="width: 84%;">
+    <strong>La formation s’ouvre à tous les bacheliers</strong>, pour rappel? Avoir des connaissances en programmation, design ou audiovisuel n’est pas obligatoire mais reste un bon atout, car il faut aimer la curiosité dans cette formation pluridisciplinaire. <strong>Il est également possible de faire la formation après une reprise d’études ou une réorientation.</strong>
+</p>
+
+<h2 class="text-3xl font-bold mb-4">Nous contactez en ligne</h2>
+
+<div class="max-w-3xl">
+    <form actions="" data-async-form class="mb-8">
+        <div class="mb-6">
+            <label class="font-bold block text-left" for="firstName">Prénom</label>
+            <input type="text" id="firstName" name="firstName" class="w-full border border-gray-300 rounded px-2 py-3">
+            <p class="hidden text-red-500" data-error-message="firstName">Prénom requis</p>
+        </div>
+        <div class="mb-4">
+            <label class="font-bold block text-left" for="lastName">Nom</label>
+            <input type="text" id="lastName" name="lastName" class="w-full border border-gray-300 rounded px-2 py-3">
+            <p class="hidden text-red-500" data-error-message="lastName">Nom requis</p>
+        </div>
+        <div class="mb-4">
+            <label class="font-bold block text-left" for="email">Adresse e-mail</label>
+            <input type="text" id="email" name="email" class="w-full border border-gray-300 rounded px-2 py-3">
+            <p class="hidden text-red-500" data-error-message="email">Adresse e-mail requise</p>
+        </div>
+        <div class="mb-4">
+            <label class="font-bold block text-left" for="message">Message</label>
+            <textarea id="message" name="message" rows="5" class="w-full border border-gray-300 rounded px-2 py-8"></textarea>
+            <p class="hidden text-red-500" data-error-message="message">Message requis</p>
+        </div>
+        <div class="mb-6">
+            <label class="font-bold block mb-2 text-left">Je suis</label>
+            <div class="flex items-center gap-4">
+                <input type="radio" id="non_precise" name="je_suis" value="non_precise">
+                <label for="non_precise">Je ne souhaite pas le préciser</label>
+                <input type="radio" id="etudiant" name="je_suis" value="etudiant">
+                <label for="etudiant">Etudiant/Etudiante</label>
+                <input type="radio" id="parent" name="je_suis" value="parent">
+                <label for="parent">Parent</label>
+                <input type="radio" id="autre" name="je_suis" value="autre">
+                <label for="autre">Autre</label>
+            </div>
+            <p class="hidden text-red-500" data-error-message="je_suis">Statut requis</p>
+        </div>
+        <button type="submit" style="background-color: #1453FF;" class="font-bold text-white py-3 px-4 w-full rounded hover:bg-blue-600">ENVOYEZ</button>
+    </form>
+
+    <div class="mt-20">
+        <h2 class="text-3xl font-bold mb-4">Nous contactez par courrier</h2>
+        <ul>
+            <li>IUT de Cergy-Pontoise,</li>
+            <li>Département Métiers du Multimédia et de l’Internet (MMI)</li>
+            <li>34 Bis Boulevard Henri Bergson</li>
+            <li>95200 Sarcelles</li>
+        </ul>
     </div>
-    <div> 
-        <label for="lastName">Nom</label>
-        <input type="text" id="lastName" name="lastName">
-        <p class="hidden" data-error-message="lastName">Nom requis</p>
-    </div>
-
-    <button type="submit">Envoyer</button>
-</form>
-
+</div>
 {% endblock %}
+

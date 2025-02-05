@@ -1,5 +1,3 @@
-{% set bubble_color = "rouge" %}
-
 <!DOCTYPE html>
 <html lang="fr" class="bg-neutral-50 text-slate-900">
     <head>
@@ -11,6 +9,7 @@
             {% block title %}TITRE MANQUANT !{% endblock %} - SAÉ 501
         </title>
 
+        <link rel="icon" type="image/png" href="/images/logoCY.png">
         <link rel="stylesheet" href="/styles/reset.css">
         <link rel="stylesheet" href="/styles/fonts.css">
         {% if NODE_ENV != "development" %}
@@ -42,5 +41,17 @@
         <main class="max-w-[1200px] mx-auto @container/main">
             {% block main %}{% endblock %}
         </main>
+         <footer class="border-y border-gray-400 text-center mx-6 my-3">
+                    <p class="font-bold">SAE 501 - Projet réalisé par : </p> 
+                    <ul class="flex flex-col sm:flex-row justify-center">
+                        <li class="px-1">Diangou CAMARA</li>
+                        <li class="px-1">Jhermaine CRISOSTOMO</li>
+                        <li class="px-1">Antoine MONCADA</li>
+                    </ul>
+                </footer>
+{% block extra_scripts %}
+<script src="/public/js/validation.js"  type="module"></script>
+{% endblock %}
+
     </body>
 </html>

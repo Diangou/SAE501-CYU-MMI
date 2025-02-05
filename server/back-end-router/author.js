@@ -20,7 +20,7 @@ router.get(`/${base}`, async (req, res) => {
         result = await axios(options);
     } catch {}
 
-    res.render("pages/back-end/authors/list.njk", {
+    res.render("pages/back-end/auteurs/list.njk", {
         list_authors: result.data,
     });
 });
