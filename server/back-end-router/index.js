@@ -32,13 +32,14 @@ router.use(articleRouter);
 router.use(messageRouter);
 router.use(authorRouter);
 
+
+
 router.get("/", routeName("admin"), async (req, res) => {
     const queryParamsSAEs = querystring.stringify({ per_page: 5 });
     const optionsSAEs = {
         method: "GET",
         url: `${res.locals.base_url}/api/saes?${queryParamsSAEs}`,
     };
-
     const listSAEs = await axios(optionsSAEs);
 
     const queryParamsArticles = querystring.stringify({ per_page: 5 });
@@ -58,9 +59,11 @@ router.get("/", routeName("admin"), async (req, res) => {
     const queryParamsAuthors = querystring.stringify({ per_page: 5 });
     const optionsAuthors = {
         method: "GET",
-        url: `${res.locals.base_url}/api/messages?${queryParamsAuthors}`,
+        url: `${res.locals.base_url}/api/authors?${queryParamsAuthors}`, 
     };
     const listAuthors = await axios(optionsAuthors);
+
+
 
     res.render("pages/back-end/index.njk", {
         list_saes: {
@@ -81,5 +84,6 @@ router.get("/", routeName("admin"), async (req, res) => {
         },
     });
 });
+
 
 export default router;
