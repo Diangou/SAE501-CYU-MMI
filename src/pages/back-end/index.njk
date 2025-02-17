@@ -128,5 +128,51 @@
     </table>
 </div>
 
+<div class="bg-white rounded-2xl mb-10 shadow-md pb-6">
+    <header class="mb-1 p-6 flex justify-between items-center">
+        <h2 class="text-4xl">Liste des derniers auteurs</h2>
+        <a href="http://localhost:3900/admin/authors" class="inline-flex gap-1 text-md text-white rounded-2xl items-center text-sm py-2 px-4 bg-blue-700 hover:bg-blue-950 h-fit">
+            <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/>
+            </svg>
+            Voir tout
+        </a>
+    </header>
+
+    <table class="w-full bg-white rounded-lg overflow-hidden border-collapse">
+        <thead>
+            <tr class="text-slate-800">
+                <th class="font-bold px-6 py-3 text-left border-b">Nom</th>
+                <th class="font-bold px-6 py-3 text-left border-b">Prénom</th>
+                <th class="font-bold px-6 py-3 text-left border-b">Email</th>
+                <th class="font-bold px-6 py-3 text-left border-b">Image</th>
+                <th class="font-bold px-6 py-3 text-left border-b">Bio</th>
+                <th class="font-bold px-6 py-3 text-left border-b">Articles</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for author in list_authors.data %}
+                <tr class="hover:bg-neutral-50 even:bg-blue-50">
+                    <td class="border-b py-4 px-6">{{ author.lastname }}</td>
+                    <td class="border-b py-4 px-6">{{ author.firstname }}</td>
+                    <td class="border-b py-4 px-6">
+                        <a href="mailto:{{ author.email }}" class="text-blue-700 hover:text-blue-900">{{ author.email }}</a>
+                    </td>
+                    <td class="border-b py-4 px-6">
+                        <img src="{{ author.image }}" alt="Photo de {{ author.firstname }}" class="w-16 h-16 object-cover rounded-full">
+                    </td>
+                    <td class="border-b py-4 px-6">{{ author.bio or "Aucune bio" }}</td>
+                    <td class="border-b py-4 px-6">{{ author.list_articles | length }} article(s)</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6" class="text-center border-b py-4 px-6">Pas d'auteurs pour le moment</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
 
 {% endblock %}
