@@ -35,9 +35,18 @@
                 <p class="rounded-lg p-3 bg-red-100 text-red-800 border-solid border-x border-y border-red-700 mb-3">{{ item }}</p>
             {% endfor %}
             {% if messages.success %}
-                <p class="rounded-lg p-3 bg-green-100 text-green-800 border-solid border-x border-y border-green-700 mb-3">{{ messages.success }}</p>
+                <p class="rounded-lg p-3 bg-green-100 text-green-800 border-solid border-x border-y border-green-700 mb-3">
+                    {{ messages.success }}
+                </p>
             {% endif %}
-           <form action="/api/authors" method="post" enctype="multipart/form-data">
+
+            {% if is_edit == true %}
+                <p class="rounded-lg p-3 bg-green-100 text-green-800 border-solid border-x border-y border-green-700 mb-3">
+                    L'auteur a bien été modifié !
+                </p>
+            {% endif %}
+            
+            <form action="" method="post" enctype="multipart/form-data">
                 <label class="block mb-4">
                     <span class="font-bold text-slate-700 after:content-['*'] after:ml-0.5 after:text-red-500">Nom</span>
                     <input class="block bg-white w-full border border-slate-300 rounded-md py-2 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm" type="text" name="lastname" value="{{ author.lastname }}"/>
@@ -57,7 +66,7 @@
                     <label for="image">
                         <span class="font-bold text-slate-700 after:ml-0.5 after:text-red-500">Image</span>
                     </label>
-                    {{ input_file.field(sae.image, undefined, ".jpg, .jpeg, .png, .avif") }}
+                    {{ input_file.field(author.image, undefined, ".jpg, .jpeg, .png, .avif") }}
                 </div>
 
                 <label class="block mb-4">
@@ -81,4 +90,3 @@
         </div>
     </div>
 {% endblock %}
-

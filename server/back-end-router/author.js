@@ -7,7 +7,7 @@ import routeName from "#server/utils/name-route.middleware.js";
 
 import upload from "#server/uploader.js";
 
-const base = "auteurs";
+const base = "authors";
 const router = express.Router();
 
 // Get multiple authors

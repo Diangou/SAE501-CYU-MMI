@@ -31,7 +31,6 @@ const authorSchema = new Schema({
     },
     image: {
         type: String,
-        required: [true, "Image obligatoire"],
     },
     bio: {
         type: String,
