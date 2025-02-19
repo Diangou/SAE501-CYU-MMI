@@ -8,7 +8,7 @@
         <title>
             {% block title %}TITRE MANQUANT !{% endblock %} - SAÉ 501
         </title>
-
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <link rel="icon" type="image/png" href="/images/logoCY.png">
         <link rel="stylesheet" href="/styles/reset.css">
         <link rel="stylesheet" href="/styles/fonts.css">
@@ -41,19 +41,58 @@
         <main class="max-w-[1200px] mx-auto @container/main">
             {% block main %}{% endblock %}
         </main>
-         <footer class="border-y border-gray-400 mx-6 my-16">
-            <section class="flex flex-col sm:flex-row justify-center m-2">
-                <div class="m-2">
-             <img src="/images/logo-cyu-couleur.svg" alt="">
-             </div>
-             <div class="m-2">
-                <p class="px-1">Certains textes sont issus de Wikipédia</p>
-                    <ul class="flex flex-row">
+
+        <footer class="border-y border-gray-400 mx-6 my-16">
+            <section class="flex flex-col sm:flex-row justify-center items-center m-2">
+                <div class="m-2 flex flex-col items-center sm:flex-row">
+                    <!-- Icône de rechargement à gauche de l'image -->
+                    <button id="reloadBtn" class="p-2 rounded mr-4">
+                        <i class="fas fa-sync fa-spin text-gray-500"></i>
+                    </button>
+                    <!-- Logo Université -->
+                    <img id="universityLogo" src="/images/logo-cyu-couleur.svg" alt="Logo Université" class="w-28 h-auto mb-2">
+                </div>
+
+                <div class="hidden sm:block w-[1px] h-16 bg-gray-500 mx-1"></div>
+
+                <div class="m-2 text-center sm:text-left">
+                    <p class="px-1 text-gray-500">Certains textes sont issus de Wikipédia</p>
+                    <ul class="flex flex-row justify-center sm:justify-start">
                         <li class="px-1 text-cyan-600"><a href="https://fr-fr.facebook.com/CYCergyParisUniversite/" target="_blank">Facebook</a></li>
                         <li class="px-1 text-cyan-600"><a href="https://twitter.com/universitecergy?lang=fr" target="_blank">Twitter</a></li>
-                        <li class="px-1 text-cyan-600 text-center"><a href="https://www.cyu.fr/" target="_blank">Université CY Paris Université</a></li>
-                        <li class="px-1 underline underline-offset-2"><a href="#">Remonter</a></li>
+                        <li class="px-1 text-cyan-600"><a href="https://www.cyu.fr/" target="_blank">Université CY Paris Université</a></li>
+                        <div class="hidden sm:block w-[1px] h-5 bg-gray-500 mx-1"></div>
+                        <li class="px-1 underline underline-offset-2 text-gray-500"><a href="#">Remonter</a></li>
                     </ul>
-                </footer>
+                    <p class="px-1 text-gray-500">© 2013-2021 - BUT MMI - CY Paris Université - SAE 501</p>
+                </div>
+            </section>
+        </footer>
+
+        <script>
+            const logoImg = document.getElementById("universityLogo");
+            const reloadBtn = document.getElementById("reloadBtn");
+
+            // Liste des logos prédéfinis
+            const logoList = [
+                "/images/logo-cyu-couleur.svg",
+                "/images/logoCY.png",
+                "/images/logoCYgris.png",
+            ];
+            let currentLogoIndex = 0;
+
+            // Charger le logo sauvegardé
+            const savedLogo = localStorage.getItem("universityLogo");
+            if (savedLogo) {
+                logoImg.src = savedLogo;
+            }
+
+            // Changer entre les logos enregistrés lorsque l'icône de rechargement est cliquée
+            reloadBtn.addEventListener("click", function() {
+                currentLogoIndex = (currentLogoIndex + 1) % logoList.length;
+                logoImg.src = logoList[currentLogoIndex];
+                localStorage.setItem("universityLogo", logoList[currentLogoIndex]);
+            });
+        </script>
     </body>
 </html>
