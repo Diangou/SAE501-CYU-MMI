@@ -4,6 +4,8 @@ import mongoose from "mongoose";
 import querystring from "querystring";
 
 import Author from "#models/author.js";
+import routeName from "#server/utils/name-route.middleware.js";
+
 
 import upload, { uploadImage, deleteUpload } from "#server/uploader.js";
 
@@ -55,7 +57,7 @@ const base = "authors";
  *            schema:
  *              $ref: '#/components/schemas/Error'
  */
-router.get(`/${base}`, async (req, res) => {
+router.get(`/${base}`, routeName("author_api"), async (req, res) => {
     const page = Math.max(1, Number(req.query.page) || 1);
     const perPage = Number(req.query.per_page);
 
@@ -159,7 +161,7 @@ router.get(`/${base}`, async (req, res) => {
  *            schema:
  *              $ref: '#/components/schemas/Error'
  */
-router.get(`/${base}/:id([a-f0-9]{24})`, async (req, res) => {
+router.get(`/${base}/:id([a-f0-9]{24})`, routeName("author_api"), async (req, res) => {
     const page = Math.max(1, Number(req.query.page) || 1);
     let perPage = Number(req.query.per_page) || 7;
     perPage = Math.min(Math.max(perPage, 1), 20);
@@ -280,7 +282,7 @@ router.get(`/${base}/:id([a-f0-9]{24})`, async (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post(`/${base}`, upload.single("image"), async (req, res) => {
+router.post(`/${base}`, routeName("author_api"), upload.single("image"), async (req, res) => {
     let imagePayload = {};
     let listErrors = [];
     let targetPath = undefined;
@@ -377,7 +379,8 @@ router.post(`/${base}`, upload.single("image"), async (req, res) => {
  *            schema:
  *              $ref: '#/components/schemas/Error'
  */
-router.put(`/${base}/:id([a-f0-9]{24})`, upload.single("image"), async (req, res) => {
+
+router.put(`/${base}/:id([a-f0-9]{24})`, routeName("author_api"), upload.single("image"), async (req, res) => {
     let imagePayload = {};
     let listErrors = [];
     let targetPath = undefined;
@@ -408,9 +411,24 @@ router.put(`/${base}/:id([a-f0-9]{24})`, upload.single("image"), async (req, res
         });
     }
 
+    const payload = structuredClone(req.body);
+
+    // delete previous image and doesn't upload a new one
+    if ("delete_file_image" in payload && "file" in payload === false) {
+        payload.image = "";
+        const targetPath = `${res.locals.upload_path}${oldRessource.image}`;
+        fs.unlink(targetPath, () => {});
+    }
+
+    // delete previous image
+    if ("file" in payload) {
+        const targetPath = `${res.locals.upload_path}${oldRessource.image}`;
+        fs.unlink(targetPath, () => {});
+    }
+
     const ressource = await Author.findOneAndUpdate(
         { _id: req.params.id },
-        { ...req.body, _id: req.params.id, ...imagePayload },
+        { ...payload, _id: req.params.id, ...imagePayload },
         { new: true }
     )
         .orFail()
@@ -424,7 +442,6 @@ router.put(`/${base}/:id([a-f0-9]{24})`, upload.single("image"), async (req, res
                     errors: [
                         ...listErrors,
                         "Élément non trouvé",
-                        ...deleteUpload(targetPath),
                     ],
                 });
             } else {
@@ -436,7 +453,6 @@ router.put(`/${base}/:id([a-f0-9]{24})`, upload.single("image"), async (req, res
                                 { message: "Il y a eu un problème" },
                             ]
                         ).map(val => val.message),
-                        ...deleteUpload(targetPath),
                     ],
                     ressource: { ...oldRessource, ...req.body },
                 });
@@ -445,6 +461,8 @@ router.put(`/${base}/:id([a-f0-9]{24})`, upload.single("image"), async (req, res
 
     return res.status(200).json(ressource);
 });
+
+
 
 /**
  * @openapi
@@ -483,7 +501,7 @@ router.put(`/${base}/:id([a-f0-9]{24})`, upload.single("image"), async (req, res
  *            schema:
  *              $ref: '#/components/schemas/Error'
  */
-router.delete(`/${base}/:id([a-f0-9]{24})`, async (req, res) => {
+router.delete(`/${base}/:id([a-f0-9]{24})`, routeName("author_api"), async (req, res) => {
     try {
         const ressource = await Author.findByIdAndDelete(req.params.id);
 
