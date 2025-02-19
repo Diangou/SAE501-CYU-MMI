@@ -41,17 +41,19 @@
         <main class="max-w-[1200px] mx-auto @container/main">
             {% block main %}{% endblock %}
         </main>
-         <footer class="border-y border-gray-400 text-center mx-6 my-3">
-                    <p class="font-bold">SAE 501 - Projet réalisé par : </p> 
-                    <ul class="flex flex-col sm:flex-row justify-center">
-                        <li class="px-1">Diangou CAMARA</li>
-                        <li class="px-1">Jhermaine CRISOSTOMO</li>
-                        <li class="px-1">Antoine MONCADA</li>
+         <footer class="border-y border-gray-400 mx-6 my-16">
+            <section class="flex flex-col sm:flex-row justify-center m-2">
+                <div class="m-2">
+             <img src="/images/logo-cyu-couleur.svg" alt="">
+             </div>
+             <div class="m-2">
+                <p class="px-1">Certains textes sont issus de Wikipédia</p>
+                    <ul class="flex flex-row">
+                        <li class="px-1 text-cyan-600"><a href="https://fr-fr.facebook.com/CYCergyParisUniversite/" target="_blank">Facebook</a></li>
+                        <li class="px-1 text-cyan-600"><a href="https://twitter.com/universitecergy?lang=fr" target="_blank">Twitter</a></li>
+                        <li class="px-1 text-cyan-600 text-center"><a href="https://www.cyu.fr/" target="_blank">Université CY Paris Université</a></li>
+                        <li class="px-1 underline underline-offset-2"><a href="#">Remonter</a></li>
                     </ul>
                 </footer>
-{% block extra_scripts %}
-<script src="/public/js/validation.js"  type="module"></script>
-{% endblock %}
-
     </body>
 </html>
