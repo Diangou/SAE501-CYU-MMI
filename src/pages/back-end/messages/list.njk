@@ -37,13 +37,20 @@
             <tbody>
                 {% for message in list_messages.data %}
                     <tr class="hover:bg-neutral-50 even:bg-blue-50">
-                        <td class="py-4 px-6 bg-transparent border-solid border-slate-200 border-b">{{ message.firstName }}</td>
+                        <td class="py-4 px-6 bg-transparent border-solid border-slate-200 border-b">
+                            <a href="{{ admin_url }}/messages/{{ message._id }}" class="text-blue-700 hover:text-blue-900">
+                                {{ message.firstName }}
+                            </a>
+                        </td>
                         <td class="py-4 px-6 bg-transparent border-solid border-slate-200 border-b">{{ message.lastName }}</td>
                         <td class="py-4 px-6 bg-transparent border-solid border-slate-200 border-b">{{ message.email }}</td>
-                        <td class="py-4 px-6 bg-transparent border-solid border-slate-200 border-b">{{ message.content }}</td>
+                        <td class="py-4 px-6 bg-transparent border-solid border-slate-200 border-b">
+                            <p class="line-clamp-2" title="{{ message.content }}">{{ message.content }}</p>
+                        </td>
                         <td class="py-4 px-6 bg-transparent border-solid border-slate-200 border-b">{{ message.identity }}</td>
-                        <td class="py-4 px-6 bg-transparent border-solid border-slate-200 border-b"> {{ message.created_at | date("DD HH:mm") }}</td>
-
+                        <td class="py-4 px-6 bg-transparent border-solid border-slate-200 border-b">
+                            {{ message.created_at | date("DD HH:mm") }}
+                        </td>
                     </tr>
                 {% else %}
                     <tr>
