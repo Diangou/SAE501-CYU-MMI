@@ -15,6 +15,8 @@ import "./back-end/display-pagination-shortcut.js";
 import "./back-end/tooltip-manager.js";
 import "./back-end/breadcrumb-modal.js";
 import "/src/scripts/store-scroll-position.utils";
+import "/public/js/compteur_caracteres.js";
+
 
 if (process.env.NODE_ENV === "development") {
     await import("./profiler-bar");
