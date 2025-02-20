@@ -8,6 +8,7 @@
                 <th class="font-bold px-6 text-left border-solid border-slate-200 border-b py-3">Image</th>
                 <th class="font-bold px-6 text-left border-solid border-slate-200 border-b py-3">Bio</th>
                 <th class="font-bold px-6 text-left border-solid border-slate-200 border-b py-3">Articles</th>
+                <th class="font-bold px-6 text-left border-solid border-slate-200 border-b py-3">Couleur</th> <!-- Nouvelle colonne -->
                 <th class="px-6 border-solid border-slate-200 border-b py-3"></th>
             </tr>
         </thead>
@@ -29,6 +30,9 @@
                         {% endif %}
                     </td>
                     <td class="py-4 px-6 bg-transparent border-solid border-slate-200 border-b shadow-transparent" data-label="Articles">{{ item.nb_articles }}</td>
+                    <td class="py-4 px-6 bg-transparent border-solid border-slate-200 border-b shadow-transparent" data-label="Couleur">
+                        <div class="w-8 h-8 rounded-full" style="background-color: {{ item.color }};"></div> <!-- Affichage de la couleur -->
+                    </td>
                     <td class="py-4 px-6 bg-transparent border-solid border-slate-200 border-b-2 shadow-transparent lg:text-right align-middle">
                         <div class="inline-flex gap-6 w-full justify-around">
                             {{ list_actions.edit("author_form" | routeName({ id: item._id })) }}
@@ -38,7 +42,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="7" class="text-center bg-transparent border-solid border-slate-200 border-b py-4 px-6">Pas de contenu pour le moment</td>
+                    <td colspan="8" class="text-center bg-transparent border-solid border-slate-200 border-b py-4 px-6">Pas de contenu pour le moment</td>
                 </tr>
             {% endfor %}
         </tbody>

@@ -83,6 +83,7 @@ router.get(`/${base}`, routeName("author_api"), async (req, res) => {
                     bio: 1,
                     email: 1,
                     nb_articles: { $size: "$list_articles" },
+                    color: 1,
                 },
             },
         ]);
@@ -237,6 +238,8 @@ router.get(`/${base}/:id([a-f0-9]{24})`, routeName("author_api"), async (req, re
         });
     }
 });
+
+
 
 /**
  * @openapi
