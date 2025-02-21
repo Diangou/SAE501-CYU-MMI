@@ -42,7 +42,11 @@ const authorSchema = new Schema({
     },
     color: {
         type: String,
-        default: defaultColor,
+        default: "#ff00ea"
+    },
+    colorborder: {
+        type: String,
+        default: "#00aaff"
     },
     list_articles: [
         {

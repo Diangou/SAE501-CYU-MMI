@@ -1,55 +1,48 @@
-{% extends "layouts/front-end/base.njk" %}
+{% extends "layouts/front-end/base-auteur.njk" %}
+
+
+{% import "components/back-end/list-actions.njk" as list_actions %}
+{% import "pages/back-end/auteurs/table.njk" as authors with context %}
+
+
+
 
 {% block title %}Détails de l'Auteur{% endblock %}
 
 {% block main %}
 <div class="container mx-auto px-4 py-10">
-    <div class="text-center mb-10">
-        <h1 class="text-4xl font-extrabold">Profil de l'Auteur</h1>
-    </div>
-
-    <div class="bg-white shadow-md rounded-xl p-8 flex flex-col md:flex-row items-center md:items-start">
-        <img class="w-48 h-48 rounded-full border-4 border-gray-400 shadow-lg" 
-            src="/uploads/{{ author.image }}" 
-            alt="Photo de {{ author.firstname }} {{ author.lastname }}">
-        <div class="md:ml-8 text-center md:text-left mt-6 md:mt-0">
-            <h2 class="text-3xl font-bold text-gray-800">{{ author.firstname }} {{ author.lastname }}</h2>
-            <p class="text-gray-600 mt-4 leading-relaxed">{{ author.bio }}</p>
+    {% if error %}
+        <p class="text-red-500">{{ error }}</p>
+    {% else %}
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-extrabold">Profil de l'Auteur</h1>
         </div>
-    </div>
 
-    <div class="mt-12">
-        <h2 class="text-2xl font-bold text-gray-800 border-b-2 pb-2">Articles de l'Auteur</h2>
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-6" id="articles-container">
-            <!-- Les articles seront ajoutés ici via JavaScript -->
+        <div class="bg-white shadow-md rounded-xl p-8 flex flex-col md:flex-row items-center md:items-start">
+            <img class="w-48 h-48 rounded-full border-4 border-gray-400 shadow-lg" 
+                src="/uploads/{{ author.image }}" 
+                alt="Photo de {{ author.firstname }} {{ author.lastname }}">
+            <div class="md:ml-8 text-center md:text-left mt-6 md:mt-0">
+                <h2 class="text-3xl font-bold text-gray-800">{{ author.firstname }} {{ author.lastname }}</h2>
+                <p class="text-gray-600 mt-4 leading-relaxed">{{ author.bio }}</p>
+            </div>
         </div>
-    </div>
+
+        <div class="mt-12">
+            <h2 class="text-2xl font-bold text-gray-800 border-b-2 pb-2">Articles de l'Auteur</h2>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
+                {% if author.list_articles.length > 0 %}
+                    {% for article in author.list_articles %}
+                        <div class="bg-gray-100 p-4 rounded-md">
+                            <h3 class="text-lg font-bold">{{ article.title }}</h3>
+                            <p class="text-sm text-gray-600">{{ article.chapo }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-gray-500">Cet auteur n'a pas encore écrit d'articles.</p>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
 </div>
-
-<script>
-    const authorId = '{{ author._id }}';  // Récupère l'ID de l'auteur depuis le template
-
-    fetch(`/api/authors/${authorId}`)
-        .then(response => response.json())
-        .then(data => {
-            const articlesContainer = document.getElementById('articles-container');
-            if (data && data.list_articles && data.list_articles.length > 0) {
-                data.list_articles.forEach(article => {
-                    const articleElement = document.createElement('article');
-                    articleElement.classList.add('bg-white', 'shadow-md', 'rounded-lg', 'p-6');
-                    articleElement.innerHTML = `
-                        <h3 class="text-xl font-semibold text-gray-900">${article.title}</h3>
-                        <p class="text-gray-600 mt-2">${article.description}</p>
-                        <a href="/articles/${article._id}" class="text-indigo-500 font-medium mt-3 inline-block">Lire plus →</a>
-                    `;
-                    articlesContainer.appendChild(articleElement);
-                });
-            } else {
-                articlesContainer.innerHTML = '<p>Aucun article disponible pour cet auteur.</p>';
-            }
-        })
-        .catch(error => {
-            console.error('Erreur lors du chargement des articles', error);
-        });
-</script>
 {% endblock %}
