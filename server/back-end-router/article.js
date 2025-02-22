@@ -2,6 +2,7 @@ import express from "express";
 import axios from "axios";
 import mongoose from "mongoose";
 import querystring from "querystring";
+import routeName from "#server/utils/name-route.middleware.js";
 
 import upload from "#server/uploader.js";
 
@@ -9,7 +10,7 @@ const base = "articles";
 const router = express.Router();
 
 // Get multiple articles
-router.get(`/${base}`, async (req, res) => {
+router.get(`/${base}`, routeName("article_list"), async (req, res) => {
     const queryParams = querystring.stringify(req.query);
     const options = {
         method: "GET",
@@ -26,7 +27,9 @@ router.get(`/${base}`, async (req, res) => {
 });
 
 // Get or create article
-router.get([`/${base}/:id`, `/${base}/add`], async (req, res) => {
+router
+    .route([`/${base}/:id`, `/${base}/add`])
+    .get(routeName("article_form"), async (req, res) => {
     const isEdit = req.params.id !== "add";
 
     let result = {};
@@ -44,7 +47,8 @@ router.get([`/${base}/:id`, `/${base}/add`], async (req, res) => {
         listErrors = error.response.data.errors;
     }
 
-    res.render("", {
+
+    res.render("pages/back-end/articles/add-edit.njk", {
         article: result?.data || {},
         list_errors: listErrors,
         is_edit: isEdit,
@@ -98,7 +102,7 @@ router.post([`/${base}/:id`, `/${base}/add`], upload.single("image"), async (req
         ressource = e.response.data.ressource || {};
     } finally {
         if (listErrors.length || isEdit) {
-            res.render("", {
+            res.render("pages/back-end/articles/add-edit.njk", {
                 article: ressource,
                 list_errors: listErrors,
                 list_authors: listAuthors,
