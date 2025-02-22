@@ -5,16 +5,16 @@
 {% block title %}Contact{% endblock %}
 
 {% block main %}
-<h2 class="text-3xl font-bold mb-1">Plus d’infos sur la formation ?</h2>
-<h2 class="text-3xl font-bold mb-6">Contactez-nous !</h2>
+<h2 class="text-3xl font-bold mb-1 text-center md:text-left">Plus d’infos sur la formation ?</h2>
+<h2 class="text-3xl font-bold mb-6 text-center md:text-left">Contactez-nous !</h2>
 
-<p class="mb-8" style="width: 84%;">
+<p class="mb-8 w-full md:w-5/6 mx-auto md:mx-0">
     <strong>La formation s’ouvre à tous les bacheliers</strong>, pour rappel? Avoir des connaissances en programmation, design ou audiovisuel n’est pas obligatoire mais reste un bon atout, car il faut aimer la curiosité dans cette formation pluridisciplinaire. <strong>Il est également possible de faire la formation après une reprise d’études ou une réorientation.</strong>
 </p>
 
-<h2 class="text-3xl font-bold mb-4">Nous contactez en ligne</h2>
+<h2 class="text-3xl font-bold mb-4 text-center md:text-left">Nous contacter en ligne</h2>
 
-<div class="max-w-3xl">
+<div class="max-w-3xl mx-auto md:mx-0">
     <form actions="" data-async-form class="mb-8">
         <div class="mb-6">
             <label class="font-bold block text-left" for="firstName">Prénom</label>
@@ -33,29 +33,37 @@
         </div>
         <div class="mb-4">
             <label class="font-bold block text-left" for="message">Message</label>
-            <textarea id="message" name="message" rows="5" class="w-full border border-gray-300 rounded px-2 py-8"></textarea>
+            <textarea id="message" name="message" rows="5" class="w-full border border-gray-300 rounded px-2 py-3"></textarea>
             <p class="hidden text-red-500" data-error-message="message">Message requis</p>
         </div>
         <div class="mb-6">
             <label class="font-bold block mb-2 text-left">Je suis</label>
-            <div class="flex items-center gap-4">
-                <input type="radio" id="non_precise" name="je_suis" value="non_precise">
-                <label for="non_precise">Je ne souhaite pas le préciser</label>
-                <input type="radio" id="etudiant" name="je_suis" value="etudiant">
-                <label for="etudiant">Etudiant/Etudiante</label>
-                <input type="radio" id="parent" name="je_suis" value="parent">
-                <label for="parent">Parent</label>
-                <input type="radio" id="autre" name="je_suis" value="autre">
-                <label for="autre">Autre</label>
+            <div class="flex flex-wrap items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <input type="radio" id="non_precise" name="je_suis" value="non_precise">
+                    <label for="non_precise">Je ne souhaite pas le préciser</label>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="radio" id="etudiant" name="je_suis" value="etudiant">
+                    <label for="etudiant">Étudiant/Étudiante</label>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="radio" id="parent" name="je_suis" value="parent">
+                    <label for="parent">Parent</label>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="radio" id="autre" name="je_suis" value="autre">
+                    <label for="autre">Autre</label>
+                </div>
             </div>
             <p class="hidden text-red-500" data-error-message="je_suis">Statut requis</p>
         </div>
-        <button type="submit" style="background-color: #1453FF;" class="font-bold text-white py-3 px-4 w-full rounded hover:bg-blue-600">ENVOYEZ</button>
+        <button type="submit" class="font-bold text-white py-3 px-4 w-full rounded bg-blue-600 hover:bg-blue-700">ENVOYEZ</button>
     </form>
 
-    <div class="mt-20">
-        <h2 class="text-3xl font-bold mb-4">Nous contactez par courrier</h2>
-        <ul>
+    <div class="mt-20 text-center md:text-left">
+        <h2 class="text-3xl font-bold mb-4">Nous contacter par courrier</h2>
+        <ul class="text-lg">
             <li>IUT de Cergy-Pontoise,</li>
             <li>Département Métiers du Multimédia et de l’Internet (MMI)</li>
             <li>34 Bis Boulevard Henri Bergson</li>
@@ -64,4 +72,3 @@
     </div>
 </div>
 {% endblock %}
-
