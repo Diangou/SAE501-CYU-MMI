@@ -3,7 +3,6 @@ import axios from "axios";
 import mongoose from "mongoose";
 import querystring from "querystring";
 import routeName from "#server/utils/name-route.middleware.js";
-
 import upload from "#server/uploader.js";
 
 const base = "articles";
@@ -34,6 +33,7 @@ router
 
     let result = {};
     let listErrors = [];
+    let listAuthors = [];
 
     try {
         if (isEdit) {
@@ -43,14 +43,21 @@ router
             };
             result = await axios(options);
         }
-    } catch (error) {
-        listErrors = error.response.data.errors;
-    }
 
+        // Fetch authors for selection
+        const authorsResponse = await axios({
+            method: "GET",
+            url: `${res.locals.base_url}/api/authors`,
+        });
+        listAuthors = authorsResponse.data.data;
+    } catch (error) {
+        listErrors = error.response?.data?.errors || [];
+    }
 
     res.render("pages/back-end/articles/add-edit.njk", {
         article: result?.data || {},
         list_errors: listErrors,
+        list_authors: listAuthors,
         is_edit: isEdit,
     });
 });
@@ -58,48 +65,33 @@ router
 // Create or update article
 router.post([`/${base}/:id`, `/${base}/add`], upload.single("image"), async (req, res) => {
     let ressource = {};
-
     const isEdit = mongoose.Types.ObjectId.isValid(req.params.id);
-
     let listErrors = [];
     let listAuthors = [];
 
     let options = {
-        headers: {
-            "Content-Type": "multipart/form-data",
-        },
-        data: {
-            ...req.body,
-            file: req.file,
-        },
+        headers: { "Content-Type": "multipart/form-data" },
+        data: { ...req.body, file: req.file },
     };
 
-    if (isEdit) {
-        options = {
-            ...options,
-            method: "PUT",
-            url: `${res.locals.base_url}/api/${base}/${req.params.id}`,
-        };
-    } else {
-        options = {
-            ...options,
-            method: "POST",
-            url: `${res.locals.base_url}/api/${base}`,
-        };
-    }
+    options.method = isEdit ? "PUT" : "POST";
+    options.url = isEdit
+        ? `${res.locals.base_url}/api/${base}/${req.params.id}`
+        : `${res.locals.base_url}/api/${base}`;
 
     try {
         const result = await axios(options);
         ressource = result.data;
 
-        listAuthors = await axios({
+        // Fetch authors again after modification
+        const authorsResponse = await axios({
             method: "GET",
             url: `${res.locals.base_url}/api/authors`,
         });
-        listAuthors = listAuthors.data.data;
+        listAuthors = authorsResponse.data.data;
     } catch (e) {
-        listErrors = e.response.data.errors;
-        ressource = e.response.data.ressource || {};
+        listErrors = e.response?.data?.errors || [];
+        ressource = e.response?.data?.ressource || {};
     } finally {
         if (listErrors.length || isEdit) {
             res.render("pages/back-end/articles/add-edit.njk", {

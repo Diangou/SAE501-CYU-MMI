@@ -99,9 +99,9 @@
                     <select id="author" name="author" class="form-control" required>
                         <option value="">Sélectionnez un auteur</option>
                         {% for author in list_authors %}
-                            <option value="{{ author._id }}"
+                            <option  class="font-bold red" value="{{ author._id }}"
                                 {% if author._id == item.author %}selected{% endif %}>
-                                {{ author.name }}
+                                {{ author.firstname ~ ' ' ~ author.lastname }}
                             </option>
                         {% endfor %}
                     </select>
