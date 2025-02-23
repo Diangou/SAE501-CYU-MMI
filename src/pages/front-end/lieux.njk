@@ -2,52 +2,50 @@
 
 {% set bubble_color = "bleu" %}
 
-
-{% block title %}Lieux de vie
-{% endblock %}
+{% block title %}Lieux de vie{% endblock %}
 
 {% block main %}
 
-<h1 class="text-3xl font-bold lg:col-span-2 mt-6 lg:mt-0">Lieux de Vie</h1>
-<p class="my-4">
-        Entre les cours, l'université et ses IUT proposent de nombreux lieux de convivialité ou d'idéation. Divers et variés, ils permettent aux étudiants, de toute formation, de découvrir de nouveux horizons et surtout de rencontrer les étudiants d'autres BUT.
-    </p>
+<h1 class="text-3xl font-bold mt-6 lg:mt-0 text-center lg:text-left">Lieux de Vie</h1>
+<p class="my-4 text-center lg:text-left px-4 lg:px-0">
+    Entre les cours, l'université et ses IUT proposent de nombreux lieux de convivialité ou d'idéation. Divers et variés, ils permettent aux étudiants, de toute formation, de découvrir de nouveaux horizons et surtout de rencontrer les étudiants d'autres BUT.
+</p>
 
-    <ul>
-        <li>
-            <section class="flex">
-                    <div class="flex-none w-96 m-3">
-                        <img class="h-80" src="/images/image-placeholder-article.png" alt="">
-                    </div>
-                    <div class="flex-auto m-3">
-                        <h2 class="text-2xl font-bold">Bibliothèque universitaire</h2>
-                        <p>La bibliothèque universitaire est un atout indispendable à votre réussite. Elle met à votre disposition des collections (livres, revues, ressources numériques accessible sur place et à distance) ainsi que des postes informatiques et des espaces de travail.</p>
-                    </div>
-            </section>
-        </li>
-         <li>
-            <section class="flex">
-                <div class="flex-auto m-3">
-                    <h2 class="text-2xl font-bold">Se restaurer</h2>
-                    <p>Les restaurants du CROUS vous permettent de déjeuner pour un tarif social fixé au plus à 3,30€. Pour bénéficier de ce tarif, il vous suffit de présenter votre carte d'étudiant multiservices.</p>
-                    <p class="bold">Si vous êtes étudiant boursier, vous bénéficiez automatiquement lors de votre passage en caisse du tarif à 1€ pour un repas complet.</p>
-                </div>
-                <div class="flex-none w-96 m-3">
-                    <img class="h-80" src="/images/image-placeholder-article.png" alt="">
-                </div>
-            </section>
-        </li>
-         <li>
-            <section class="flex">
-                    <div class="flex-none w-96 m-3">
-                        <img class="h-80" src="/images/image-placeholder-article.png" alt="">
-                    </div>
-                    <div class="flex-auto m-3">
-                        <h2 class="text-2xl font-bold">Réseau des fablabs de CY Cergy Paris Université</h2>
-                        <p>Intégré au Centre d'appui aux enseignements, le réseau des fablabs de CY Cergy Paris Université comprend le fablabs LabBoite de Cergy (Grand Centre) et le Faclab de Genevilliers (site de l'université). Ce réseau permet d'expérimenter, tester et échanger dans des lieux collaboratifs, accueillants, et ouverts à toutes et tous</p>
-                    </div>
-            </section>
-        </li>
-    </ul>
+<ul class="space-y-8 px-4 lg:px-0">
+    <li>
+        <section class="flex flex-col lg:flex-row items-center lg:items-start">
+            <div class="flex-none w-full lg:w-96 m-3">
+                <img class="h-80 w-full object-cover rounded-lg" src="/images/image-placeholder-article.png" alt="Bibliothèque universitaire">
+            </div>
+            <div class="flex-auto m-3 text-center lg:text-left">
+                <h2 class="text-2xl font-bold">Bibliothèque universitaire</h2>
+                <p>La bibliothèque universitaire est un atout indispensable à votre réussite. Elle met à votre disposition des collections (livres, revues, ressources numériques accessibles sur place et à distance) ainsi que des postes informatiques et des espaces de travail.</p>
+            </div>
+        </section>
+    </li>
+    <li>
+        <section class="flex flex-col-reverse lg:flex-row items-center lg:items-start">
+            <div class="flex-auto m-3 text-center lg:text-left">
+                <h2 class="text-2xl font-bold">Se restaurer</h2>
+                <p>Les restaurants du CROUS vous permettent de déjeuner pour un tarif social fixé au plus à 3,30€. Pour bénéficier de ce tarif, il vous suffit de présenter votre carte d'étudiant multiservices.</p>
+                <p class="font-bold">Si vous êtes étudiant boursier, vous bénéficiez automatiquement lors de votre passage en caisse du tarif à 1€ pour un repas complet.</p>
+            </div>
+            <div class="flex-none w-full lg:w-96 m-3">
+                <img class="h-80 w-full object-cover rounded-lg" src="/images/image-placeholder-article.png" alt="Se restaurer">
+            </div>
+        </section>
+    </li>
+    <li>
+        <section class="flex flex-col lg:flex-row items-center lg:items-start">
+            <div class="flex-none w-full lg:w-96 m-3">
+                <img class="h-80 w-full object-cover rounded-lg" src="/images/image-placeholder-article.png" alt="Fablabs CY Cergy Paris Université">
+            </div>
+            <div class="flex-auto m-3 text-center lg:text-left">
+                <h2 class="text-2xl font-bold">Réseau des fablabs de CY Cergy Paris Université</h2>
+                <p>Intégré au Centre d'appui aux enseignements, le réseau des fablabs de CY Cergy Paris Université comprend le fablab LabBoite de Cergy (Grand Centre) et le Faclab de Gennevilliers (site de l'université). Ce réseau permet d'expérimenter, tester et échanger dans des lieux collaboratifs, accueillants et ouverts à toutes et tous.</p>
+            </div>
+        </section>
+    </li>
+</ul>
 
 {% endblock %}
