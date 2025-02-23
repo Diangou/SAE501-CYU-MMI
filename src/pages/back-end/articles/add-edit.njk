@@ -1,8 +1,8 @@
 {% extends "layouts/back-end/base.njk" %}
 
 {% block title %}
-    {% if is_edit == true %}
-        Editer "{{ item.title }} {{ item.content }}"
+    {% if is_edit %}
+        Éditer "{{ item.title }}"
     {% else %}
         Ajouter un article
     {% endif %}
@@ -18,75 +18,129 @@
         <header class="mb-1 p-6">
             {% include "components/back-end/breadcrumb.njk" %}
             <h2 class="text-4xl">
-                {% if is_edit == true %}
-                    Editer "{{ item.title }} {{ item.content }}"
+                {% if is_edit %}
+                    Éditer "{{ item.title }}"
                 {% else %}
                     Ajouter un Article
                 {% endif %}
             </h2>
             <p class="text-sm">Les champs avec
                 <span class="font-bold text-slate-700 after:content-['*'] after:ml-0.5 after:text-red-500"></span>
-                sont requis
+                sont requis.
             </p>
         </header>
 
         <div class="px-6">
-            {% for item in list_errors %}
-                <p class="rounded-lg p-3 bg-red-100 text-red-800 border-solid border-x border-y border-red-700 mb-3">{{ item }}</p>
-            {% endfor %}
+            {% if list_errors.length %}
+                <div class="alert alert-danger">
+                    <ul>
+                        {% for error in list_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
             {% if messages.success %}
-                <p class="rounded-lg p-3 bg-green-100 text-green-800 border-solid border-x border-y border-green-700 mb-3">
+                <p class="rounded-lg p-3 bg-green-100 text-green-800 border-solid border-green-700 mb-3">
                     {{ messages.success }}
                 </p>
             {% endif %}
 
-            {% if is_edit == true %}
-                <p class="rounded-lg p-3 bg-green-100 text-green-800 border-solid border-x border-y border-green-700 mb-3">
+            {% if is_edit and messages.success %}
+                <p class="rounded-lg p-3 bg-green-100 text-green-800 border-solid border-green-700 mb-3">
                     L'article a bien été modifié !
                 </p>
             {% endif %}
-            
+
             <form action="" method="post" enctype="multipart/form-data">
+                <!-- Titre -->
                 <label class="block mb-4">
-                    <span class="font-bold text-slate-700 after:content-['*'] after:ml-0.5 after:text-red-500">Title</span>
-                    <input class="block bg-white w-full border border-slate-300 rounded-md py-2 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm" type="text" name="articleTitle" value="{{ item.title }}"/>
+                    <span class="font-bold text-slate-700 after:content-['*'] after:ml-0.5 after:text-red-500">Titre</span>
+                    <input class="block bg-white w-full border border-slate-300 rounded-md py-2 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
+                           type="text" name="title" value="{{ item.title or '' }}" required />
                 </label>
 
+                <!-- Contenu -->
                 <label class="block mb-4">
                     <span class="font-bold text-slate-700 after:content-['*'] after:ml-0.5 after:text-red-500">Contenu</span>
-                    <textarea name="bio" cols="15" rows="5" maxlength="{{ chars_limit }}" class="block bg-white w-full border border-slate-300 rounded-md py-2 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm" aria-describedby="counter_description">{{ item.content }}</textarea>
+                    <textarea name="content" cols="15" rows="5" maxlength="{{ chars_limit }}"
+                              class="block bg-white w-full border border-slate-300 rounded-md py-2 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
+                              aria-describedby="counter_description" required>{{ item.content or '' }}</textarea>
                     <p class="text-sm" id="counter_description">
                         {{ chars_limit }} caractères restants
                     </p>
                 </label>
 
-          
-
-
+                <!-- Image -->
                 <div class="block mb-4">
                     <label for="image">
                         <span class="font-bold text-slate-700 after:ml-0.5 after:text-red-500">Image</span>
                     </label>
-                    {{ input_file.field(author.image, undefined, ".jpg, .jpeg, .png, .avif") }}
+                    {{ input_file.field(item.image, "image", ".jpg, .jpeg, .png, .avif") }}
+                    {% if item.image %}
+                        <div class="mt-2">
+                            <img src="{{ item.image }}" alt="Image actuelle" class="img-thumbnail" width="150">
+                        </div>
+                    {% endif %}
                 </div>
 
-                
+                <!-- Lien YouTube -->
+                <label class="block mb-4">
+                    <span class="font-bold text-slate-700">ID de la vidéo YouTube</span>
+                    <input type="text" name="yt_video_id"
+                           class="block bg-white w-full border border-slate-300 rounded-md py-2 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
+                           value="{{ item.yt_video_id or '' }}">
+                </label>
 
+                <!-- Auteur -->
+                <div class="mb-3">
+                    <label for="author" class="form-label">Auteur</label>
+                    <select id="author" name="author" class="form-control" required>
+                        <option value="">Sélectionnez un auteur</option>
+                        {% for author in list_authors %}
+                            <option value="{{ author._id }}"
+                                {% if author._id == item.author %}selected{% endif %}>
+                                {{ author.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Catégorie -->
+                <label class="block mb-4">
+                    <span class="font-bold text-slate-700">Catégorie</span>
+                    <input type="text" name="category"
+                           class="block bg-white w-full border border-slate-300 rounded-md py-2 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
+                           value="{{ item.category or '' }}">
+                </label>
+
+                <!-- Slug (affiché mais non modifiable) -->
+                {% if is_edit %}
+                    <label class="block mb-4">
+                        <span class="font-bold text-slate-700">Slug (généré automatiquement)</span>
+                        <input type="text" name="slug"
+                               class="block bg-gray-100 w-full border border-slate-300 rounded-md py-2 pr-3 shadow-sm sm:text-sm"
+                               value="{{ item.slug or '' }}" readonly>
+                    </label>
+                {% endif %}
+
+                <!-- Statut actif -->
+                <div class="mb-3 form-check">
+                    <input type="checkbox" id="is_active" name="is_active" class="form-check-input"
+                           {% if item.is_active %}checked{% endif %}>
+                    <label for="is_active" class="form-check-label">Publier l'article</label>
+                </div>
+
+                <!-- Boutons -->
                 <div class="flex gap-x-3 gap-y-5 flex-col sm:flex-row">
-                    <button class="px-4 py-2 font-semibold text-sm bg-blue-700 hocus:bg-blue-950 text-white rounded-2xl shadow-sm inline-flex gap-1 items-center justify-center" type="submit">
-                        <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/>
-                        </svg>
+                    <button class="px-4 py-2 font-semibold text-sm bg-blue-700 hover:bg-blue-950 text-white rounded-2xl shadow-sm inline-flex gap-1 items-center justify-center"
+                            type="submit">
                         Sauvegarder
                     </button>
-                    <button class="px-4 py-2 font-semibold text-sm bg-neutral-100 hocus:bg-neutral-200 text-black rounded-2xl shadow-sm" type="reset">Réinitialiser</button>
-                    
-<label class="inline-flex items-center cursor-pointer">
-  <input type="checkbox" value="" class="sr-only peer">
-  <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"></div>
-  <span class="px-4 py-2 font-semibold text-sm">Show</span>
-</label>
-
+                    <button class="px-4 py-2 font-semibold text-sm bg-neutral-100 hover:bg-neutral-200 text-black rounded-2xl shadow-sm"
+                            type="reset">Réinitialiser
+                    </button>
                 </div>
             </form>
         </div>
