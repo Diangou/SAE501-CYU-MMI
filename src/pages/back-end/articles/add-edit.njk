@@ -41,17 +41,7 @@
                 </div>
             {% endif %}
 
-            {% if messages.success %}
-                <p class="rounded-lg p-3 bg-green-100 text-green-800 border-solid border-green-700 mb-3">
-                    {{ messages.success }}
-                </p>
-            {% endif %}
-
-            {% if is_edit and messages.success %}
-                <p class="rounded-lg p-3 bg-green-100 text-green-800 border-solid border-green-700 mb-3">
-                    L'article a bien été modifié !
-                </p>
-            {% endif %}
+            
 
             <form action="" method="post" enctype="multipart/form-data">
                 <!-- Titre -->
@@ -72,10 +62,10 @@
                     </p>
                 </label>
 
-                <!-- Image -->
+                <!-- Image (Optionnel) -->
                 <div class="block mb-4">
                     <label for="image">
-                        <span class="font-bold text-slate-700 after:ml-0.5 after:text-red-500">Image</span>
+                        <span class="font-bold text-slate-700 after:content-['*'] after:ml-0.5 after:text-red-500">Image</span>
                     </label>
                     {{ input_file.field(article.image, "image", ".jpg, .jpeg, .png, .avif") }}
                     {% if article.image %}
@@ -85,7 +75,7 @@
                     {% endif %}
                 </div>
 
-                <!-- Lien YouTube -->
+                <!-- Lien YouTube (Optionnel) -->
                 <label class="block mb-4">
                     <span class="font-bold text-slate-700">ID de la vidéo YouTube</span>
                     <input type="text" name="yt_video_id" 

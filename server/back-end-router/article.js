@@ -83,27 +83,34 @@ router.post([`/${base}/:id`, `/${base}/add`], upload.single("image"), async (req
         const result = await axios(options);
         ressource = result.data;
 
-        // Fetch authors again after modification
+        // Récupérer à nouveau les auteurs après modification
         const authorsResponse = await axios({
             method: "GET",
             url: `${res.locals.base_url}/api/authors`,
         });
         listAuthors = authorsResponse.data.data;
+
+        // ✅ Envoi d'un message de succès
+        req.session.successMessage = isEdit
+            ? "L'article a bien été modifié !"
+            : "L'article a bien été ajouté !";
+
+        // ✅ Redirige vers la liste après 2 secondes
+        res.redirect(`${res.locals.admin_url}/${base}`);
+
     } catch (e) {
         listErrors = e.response?.data?.errors || [];
         ressource = e.response?.data?.ressource || {};
-    } finally {
-        if (listErrors.length || isEdit) {
-            res.render("pages/back-end/articles/add-edit.njk", {
-                article: ressource,
-                list_errors: listErrors,
-                list_authors: listAuthors,
-                is_edit: isEdit,
-            });
-        } else {
-            res.redirect(`${res.locals.admin_url}/${base}`);
-        }
+
+        res.render("pages/back-end/articles/add-edit.njk", {
+            article: ressource,
+            list_errors: listErrors,
+            list_authors: listAuthors,
+            is_edit: isEdit,
+            messages: { success: req.session.successMessage || null },  //  Ajout du message
+        });
     }
 });
+
 
 export default router;

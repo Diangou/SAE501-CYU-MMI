@@ -3,6 +3,7 @@
         <thead>
             <tr class="text-slate-800">
                 <th class="font-bold px-6 text-left border-solid border-slate-200 border-b py-3">Titre</th>
+                <th class="font-bold px-6 text-left border-solid border-slate-200 border-b py-3">Contenu</th>
                 <th class="font-bold px-6 text-left border-solid border-slate-200 border-b py-3">Auteur</th>
                 <th class="font-bold px-6 text-left border-solid border-slate-200 border-b py-3">Activé ?</th>
                 <th class="px-6 border-solid border-slate-200 border-b py-3">Actions</th>
@@ -13,13 +14,17 @@
             {% for item in list.data %}
                 <tr class="hover:bg-neutral-50 even:bg-blue-50">
                     <td class="bg-transparent border-solid border-slate-200 border-b py-4 px-6" data-label="Titre">{{ item.title }}</td>
+                    <td class="py-4 px-6 bg-transparent border-solid border-slate-200 border-b shadow-transparent lg:hidden xl:[display:revert]" data-label="Contenu">
+                            <p class="line-clamp-3 md:line-clamp-1" title="{{ item.content }}">{{ item.content }}</p>
+                        </td>
                     <td class="bg-transparent border-solid border-slate-200 border-b py-4 px-6" data-label="Auteur">
                         {% if item.author %}
                             {{ item.author.firstname }} {{ item.author.lastname }}
                         {% else %}
-                            La rédaction
+                            Inconnu
                         {% endif %}
                     </td>
+                   <td class="bg-transparent border-solid border-slate-200 border-b py-4 px-6" data-label="Dernière mise à jour"><time datetime="{{ item.updated_at }}">{{ item.updated_at|date("dd/LL/yyyy à HH:mm") }}</time></td>
                     <td class="bg-transparent border-solid border-slate-200 border-b py-4 px-6 text-center" data-label="Activé ?">
                         <label class="inline-flex items-center cursor-pointer">
                             <input type="checkbox" class="toggle-article-status sr-only peer" data-id="{{ item._id }}" {% if item.is_active %}checked{% endif %}>
@@ -30,16 +35,17 @@
                                         peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"></div>
                         </label>
                     </td>
+                     
                     <td class="py-4 px-6 bg-transparent border-solid border-slate-200 border-b-2 shadow-transparent lg:text-right align-middle">
                         <div class="inline-flex gap-6 w-full justify-around">
                             {{ list_actions.edit("article_form" | routeName({ id: item._id })) }}
-                            {{ list_actions.delete("article_api" | routeName({ id: item._id }), item.title) }}
+                            {{ list_actions.delete(base_url ~ "/api/articles/" ~ item._id, item.title)}}
                         </div>
                     </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="4" class="text-center bg-transparent border-solid border-slate-200 border-b py-4 px-6">Pas de contenu pour le moment</td>
+                    <td colspan="5" class="text-center bg-transparent border-solid border-slate-200 border-b py-4 px-6">Pas de contenu pour le moment</td>
                 </tr>
             {% endfor %}
         </tbody>
