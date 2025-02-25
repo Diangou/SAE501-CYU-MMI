@@ -94,5 +94,9 @@
                 localStorage.setItem("universityLogo", logoList[currentLogoIndex]);
             });
         </script>
+        {% block extra_scripts %}
+<script src="/public/js/validation.js"  type="module"></script>
+{% endblock %}
+
     </body>
 </html>
