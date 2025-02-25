@@ -16,14 +16,21 @@ router.get(`/${base}`, routeName("article_list"), async (req, res) => {
         url: `${res.locals.base_url}/api/${base}?${queryParams}`,
     };
     let result = {};
+
     try {
         result = await axios(options);
     } catch {}
 
+
+    const successMessage = req.session.successMessage || null;
+    req.session.successMessage = null;
+
     res.render("pages/back-end/articles/list.njk", {
         list_articles: result.data,
+        messages: { success: successMessage }, 
     });
 });
+
 
 // Get or create article
 router
@@ -90,12 +97,12 @@ router.post([`/${base}/:id`, `/${base}/add`], upload.single("image"), async (req
         });
         listAuthors = authorsResponse.data.data;
 
-        // ✅ Envoi d'un message de succès
+        // ✅ Stocke temporairement le message dans la session
         req.session.successMessage = isEdit
             ? "L'article a bien été modifié !"
             : "L'article a bien été ajouté !";
 
-        // ✅ Redirige vers la liste après 2 secondes
+        // ✅ Redirige vers la liste après succès
         res.redirect(`${res.locals.admin_url}/${base}`);
 
     } catch (e) {
@@ -107,10 +114,11 @@ router.post([`/${base}/:id`, `/${base}/add`], upload.single("image"), async (req
             list_errors: listErrors,
             list_authors: listAuthors,
             is_edit: isEdit,
-            messages: { success: req.session.successMessage || null },  //  Ajout du message
+            messages: { success: req.session.successMessage || null },  
         });
     }
 });
+
 
 
 export default router;
