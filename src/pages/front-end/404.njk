@@ -1,0 +1,23 @@
+{% extends "layouts/front-end/base.njk" %}
+
+{% block title %}Erreur 404{% endblock %}
+
+{% set bubble_color = "gris" %}
+
+{% block main %}
+    <section class="text-center py-20">
+        <div class="mb-8">
+            <!-- Icône d'erreur 404 -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-20 h-20 mx-auto text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m10.292 10.292a1 1 0 01-1.414 0L12 14.414l-8.878 8.878a1 1 0 01-1.414-1.414L10.586 13 1.707 4.121a1 1 0 111.414-1.414L12 11.586l8.878-8.878a1 1 0 011.414 1.414L13.414 13l8.878 8.878a1 1 0 010 1.414z"/>
+            </svg>
+        </div>
+        
+        <h1 class="text-6xl font-bold text-red-600">404</h1>
+        <p class="text-xl mt-4">Oups ! La page que vous cherchez n'existe pas.</p>
+        
+        <a href="/" class="mt-6 inline-block px-6 py-3 bg-pink-400 text-white rounded-lg transform transition-all duration-300 ease-in-out hover:bg-pink-600 hover:scale-105">
+            Retour à l'accueil
+        </a>
+    </section>
+{% endblock %}

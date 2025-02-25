@@ -129,6 +129,12 @@ router.get('/auteur-details/:id', async (req, res) => {
     }
 });
 
+router.use((req, res) => {
+    res.status(404).render("pages/front-end/404.njk", {
+        title: "Page non trouvée",
+    });
+});
+
 
 
 export default router;
