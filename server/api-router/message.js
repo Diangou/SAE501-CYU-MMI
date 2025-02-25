@@ -1,5 +1,5 @@
 import express from "express";
-
+import mongoose from "mongoose";
 import querystring from "querystring";
 
 import Message from "#models/message.js";
@@ -10,7 +10,6 @@ const base = "messages";
 
 router.post(`/${base}`, async (req, res) => {
     console.log("Données reçues:", req.body); // Vérifier ce qui est envoyé
-
     const ressource = new Message({
         ...req.body,
         identity: req.body.je_suis, // S'assurer que "je_suis" est bien stocké sous "identity"
@@ -25,7 +24,6 @@ router.post(`/${base}`, async (req, res) => {
         });
     }
 });
-
 
 router.get(`/${base}`, async (req, res) => {
     const page = Math.max(1, Number(req.query.page) || 1);
@@ -60,30 +58,6 @@ router.get(`/${base}`, async (req, res) => {
             ],
         });
     }
-});
-
-router.get(`/${base}/:id([a-f0-9]{24})`, async (req, res) => {
-    try {
-        const message = await Message.findById(req.params.id);
-        
-        if (!message) {
-            return res.status(404).json({
-                errors: ["Message non trouvé"],
-            });
-        }
-
-        res.status(200).json(message);
-    } catch (error) {
-        res.status(400).json({
-            errors: [
-                ...Object.values(
-                    error?.errors || [{ message: error?.message || "Il y a eu un problème" }]
-                ).map(val => val.message),
-            ],
-        });
-    }
-});
-
-
+})
 
 export default router;
