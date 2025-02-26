@@ -139,6 +139,10 @@
         background-color: #d13b00;
     }
 
+    &.bleu {
+        background-color: #00a2ff;
+    }
+
     &.gris {
         background-color: #292929;
     }
