@@ -26,20 +26,39 @@ router.use(async (_req, res, next) => {
 });
 
 router.get("/", routeName("homepage"), async (req, res) => {
-    const queryParams = new URLSearchParams(req.query).toString();
+    const page = parseInt(req.query.page) || 1;
+    const perPage = 2;
+    const queryParams = new URLSearchParams({ page, per_page: perPage, is_active: "true" }).toString();
+
     const options = {
         method: "GET",
-        url: `${res.locals.base_url}/api/articles?${queryParams}&is_active=true`,
+        url: `${res.locals.base_url}/api/articles?${queryParams}`,
     };
-    let result = {};
+
+    let result = { data: [], total_pages: 1, count: 0 };
     try {
-        result = await axios(options);
-    } catch (_error) {}
+        const response = await axios(options);
+        result = response.data;
+
+        console.log("Résultat API :", JSON.stringify(result, null, 2));
+    } catch (error) {
+        console.error("Erreur lors de la récupération des articles:", error);
+    }
+
+    // Utilisation correcte des données de l'API
+    const totalPages = result.total_pages || 1;
+    const totalArticles = result.count || 0;  
+
+    console.log(`Total articles: ${totalArticles}, Total pages: ${totalPages}`);  // Debugging
 
     res.render("pages/front-end/index.njk", {
-        list_articles: result.data,
+        list_articles: result,
+        currentPage: page,
+        totalPages,
+        totalArticles,
     });
 });
+
 
 // "(.html)?" makes ".html" optional in the url
 router.get("/a-propos(.html)?", routeName("about"), async (_req, res) => {
