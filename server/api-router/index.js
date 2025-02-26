@@ -20,7 +20,7 @@ router.use((req, res, next) => {
             path: req.path,
         });
     }
-    next(); // Continue vers d'autres middlewares si c'est une API
+    next(); 
 });
 
 export default router;
