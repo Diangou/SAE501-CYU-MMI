@@ -1,0 +1,60 @@
+{% extends "layouts/front-end/base.njk" %}
+
+{% block title %}Erreur 404{% endblock %}
+
+{% set bubble_color = "gris" %}
+
+{% block main %}
+    <section class="text-center py-20">
+        <div class="mb-8">
+            <!-- Icône d'erreur 404 sans animation -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-24 h-24 mx-auto text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m10.292 10.292a1 1 0 01-1.414 0L12 14.414l-8.878 8.878a1 1 0 01-1.414-1.414L10.586 13 1.707 4.121a1 1 0 111.414-1.414L12 11.586l8.878-8.878a1 1 0 011.414 1.414L13.414 13l8.878 8.878a1 1 0 010 1.414z"/>
+            </svg>
+        </div>
+        
+        <h1 class="text-9xl font-bold text-red-600 drop-shadow-lg animate-fade-in animate-pulse-404">
+            404
+        </h1>
+        <p class="text-2xl mt-6 animate-fade-in delay-200">
+            Oups ! La page que vous cherchez n'existe pas.
+        </p>
+        
+        <a href="/" class="mt-8 inline-block px-8 py-4 bg-green-600 text-white text-lg font-semibold rounded-lg transition-transform transform hover:bg-green-700 hover:scale-110 animate-custom-pulse">
+            Retour à l'accueil
+        </a>
+    </section>
+
+    <style>
+        @keyframes customPulse {
+            0%, 100% { background-color: #16a34a; } /* bg-green-600 */
+            50% { background-color: #15803d; } /* bg-green-700 */
+        }
+
+        .animate-custom-pulse {
+            animation: customPulse 1.5s infinite;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 1s ease-in-out forwards;
+        }
+
+        .delay-200 {
+            animation-delay: 0.2s;
+        }
+
+        @keyframes pulse404 {
+            0%, 100% { transform: scale(1); } /* Taille normale */
+            50% { transform: scale(1.15); } /* Grossit légèrement */
+        }
+
+        .animate-pulse-404 {
+            animation: pulse404 1.5s infinite ease-in-out;
+        }
+    </style>
+{% endblock %}

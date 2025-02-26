@@ -100,6 +100,10 @@
     &.bleu {
         background-color: #011d37;
     }
+
+    &.gris {
+        background-color: #6a6a6a;
+    }
 }
 
 .bulle-icone-bordure {
@@ -137,5 +141,9 @@
 
     &.bleu {
         background-color: #00a2ff;
+    }
+
+    &.gris {
+        background-color: #292929;
     }
 }

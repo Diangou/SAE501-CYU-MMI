@@ -6,6 +6,7 @@ import AuthorRouter from "./author.js";
 import ArticleCommentRouter from "./comment-article.js";
 import MessageRouter from "./message.js";
 
+
 const router = express.Router();
 
 router.use(SAERouter);
@@ -13,12 +14,13 @@ router.use(ArticleRouter);
 router.use(AuthorRouter);
 router.use(ArticleCommentRouter);
 router.use(MessageRouter);
-router.all("*", (req, res) => {
-    res.status(404).json({
-        errors: [
-            `La route "${req.path}" n'existe pas`,
-        ],
-    });
+router.use((req, res, next) => {
+    if (!req.path.startsWith("/api")) { 
+        return res.status(404).render("pages/front-end/404.njk", {
+            path: req.path,
+        });
+    }
+    next(); 
 });
 
 export default router;
