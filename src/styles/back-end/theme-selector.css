@@ -1,0 +1,21 @@
+#theme-selector {
+    border-top: 1px solid #e5e7eb;
+    margin-top: 1rem;
+}
+
+.theme-color-button {
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1px #e5e7eb;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+}
+
+.theme-color-button:hover {
+    transform: scale(1.1);
+    z-index: 1;
+}
+
+.theme-color-button.active-theme {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px currentColor;
+} 
