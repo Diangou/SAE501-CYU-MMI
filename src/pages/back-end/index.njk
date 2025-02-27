@@ -163,10 +163,10 @@
                         <a href="mailto:{{ author.email }}" class="text-blue-700 hover:text-blue-900">{{ author.email }}</a>
                     </td>
                     <td class="border-b py-4 px-6">
-                        <img src="{{ author.image }}" alt="Photo de {{ author.firstname }}" class="w-16 h-16 object-cover rounded-full">
+                        <img src="/uploads/{{ author.image }}" alt="Photo de {{ author.firstname }}" class="w-16 h-16 object-cover rounded-full">
                     </td>
                     <td class="border-b py-4 px-6">{{ author.bio or "Aucune bio" }}</td>
-                    <td class="border-b py-4 px-6">{{ author.list_articles | length }} article(s)</td>
+                    <td class="border-b py-4 px-6">{{ author.nb_articles}} article(s)</td>
                 </tr>
             {% else %}
                 <tr>
