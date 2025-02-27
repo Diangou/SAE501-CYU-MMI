@@ -61,19 +61,20 @@
     
 
 
-        <a class="jpo-banniere rounded-lg overflow-hidden order-first lg:order-none" href="https://www.cyu.fr/formation/construire-son-projet/salons-journee-portes-ouvertes" title="Ouverture dans un nouvel onglet">
-            <div class="logo">
-                <img src="/images/logo-cyu-blanc.png" width="200" alt="">
-            </div>
-            <section class="textes">
-                <p class="text-2xl">Journée portes ouvertes</p>
-                <p class="text-4xl mb-3">
-                    12/02/2023,
-                    <br>
-                    de 10h à 17h
-                </p>
-                <p class="en-savoir-plus">EN SAVOIR PLUS</p>
-            </section>
-        </a>
+        <a class="jpo-banniere rounded-lg overflow-hidden order-first lg:order-none" href="https://www.cyu.fr/formation/construire-son-projet/salons-journee-portes-ouvertes">
+    <div class="logo">
+        <img src="/images/logo-cyu-blanc.png" width="200" alt="">
+    </div>
+    <section class="textes">
+        <p class="text-2xl">Journée portes ouvertes</p>
+        <p class="text-4xl mb-3">
+            {{ jpo_date }},
+            <br>
+            de {{ jpo_time }}
+        </p>
+        <p class="en-savoir-plus">EN SAVOIR PLUS</p>
+    </section>
+</a>
+
     </section>
 {% endblock %}

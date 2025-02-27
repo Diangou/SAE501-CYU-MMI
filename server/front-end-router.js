@@ -1,7 +1,7 @@
 import express from "express";
 import axios from "axios";
 import { Types } from 'mongoose'; // Si tu utilises Mongoose
-
+import { getJpoData, updateJpoData } from "#server/utils/jpoManager.js";
 
 
 import routeName from "#server/utils/name-route.middleware.js";
@@ -13,6 +13,7 @@ const router = express.Router();
 
 router.use(async (_req, res, next) => {
     const originalRender = res.render;
+
     res.render = async function (view, local, callback) {
         const manifest = {
             manifest: await parseManifest("frontend.manifest.json"),
@@ -28,6 +29,7 @@ router.use(async (_req, res, next) => {
 router.get("/", routeName("homepage"), async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const perPage = 2;
+
     const queryParams = new URLSearchParams({ page, per_page: perPage, is_active: "true" }).toString();
 
     const options = {
@@ -47,15 +49,22 @@ router.get("/", routeName("homepage"), async (req, res) => {
 
     // Utilisation correcte des données de l'API
     const totalPages = result.total_pages || 1;
-    const totalArticles = result.count || 0;  
+    const totalArticles = result.count || 0;
 
     console.log(`Total articles: ${totalArticles}, Total pages: ${totalPages}`);  // Debugging
+
+    const jpoData = await getJpoData();
+    console.log("Données JPO récupérées :", jpoData, jpoData.jpo[0]); // Debug
+
+    const firstJpo = jpoData.jpo && jpoData.jpo.length > 0 ? jpoData.jpo[0] : { date: "Non définie", time: "Non défini" };
 
     res.render("pages/front-end/index.njk", {
         list_articles: result,
         currentPage: page,
         totalPages,
         totalArticles,
+        jpo_date: firstJpo.date,
+        jpo_time: firstJpo.time
     });
 });
 
@@ -70,7 +79,7 @@ router.get("/a-propos(.html)?", routeName("about"), async (_req, res) => {
     let result = {};
     try {
         result = await axios(options);
-    } catch (_error) {}
+    } catch (_error) { }
 
     res.render("pages/front-end/about.njk", {
         list_saes: result.data,
@@ -106,7 +115,7 @@ router.get("/auteur-details(.html)?", routeName("auteur-details"), async (_req, 
     let result = {};
     try {
         result = await axios(options);
-    } catch (_error) {}
+    } catch (_error) { }
 
     res.render("pages/front-end/auteur-details.njk", {
         list_authors: result.data,
@@ -134,10 +143,10 @@ router.get('/auteur-details/:id', async (req, res) => {
             });
         }
 
-        res.render("pages/front-end/auteur-details.njk", { 
+        res.render("pages/front-end/auteur-details.njk", {
             author,
-            bubble_color: author.color,          // ✅ Couleur de fond
-            bubble_border_color: author.colorborder // ✅ Couleur de bordure
+            bubble_color: author.color,          
+            bubble_border_color: author.colorborder 
         });
 
     } catch (err) {
