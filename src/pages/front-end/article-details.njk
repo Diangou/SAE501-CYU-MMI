@@ -126,13 +126,6 @@
                     <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fullname" type="text" placeholder="Votre nom" required>
                 </div>
                 
-                <div class="mb-4">
-                    <label class="block text-gray-700 font-bold mb-2" for="email">
-                        Email
-                    </label>
-                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="email" type="email" placeholder="Votre email" required>
-                </div>
-                
                 <div class="mb-6">
                     <label class="block text-gray-700 font-bold mb-2" for="content">
                         Commentaire
@@ -186,17 +179,60 @@ document.addEventListener('DOMContentLoaded', function() {
     const commentStatus = document.getElementById('comment-status');
     const noCommentsMessage = document.getElementById('no-comments-message');
     
+    const storeCommentAuthor = (commentId, fullname) => {
+        const storedAuthors = JSON.parse(localStorage.getItem('commentAuthors') || '{}');
+        storedAuthors[commentId] = fullname;
+        localStorage.setItem('commentAuthors', JSON.stringify(storedAuthors));
+    };
+    
+    const getCommentAuthor = (commentId) => {
+        const storedAuthors = JSON.parse(localStorage.getItem('commentAuthors') || '{}');
+        return storedAuthors[commentId] || 'Anonyme';
+    };
+    
+    const applyStoredAuthorNames = () => {
+        const commentsList = document.querySelectorAll('#comments-container .bg-white');
+        commentsList.forEach(comment => {
+            const commentId = comment.dataset.commentId;
+            if (commentId) {
+                const storedName = getCommentAuthor(commentId);
+                const nameElement = comment.querySelector('.font-bold');
+                if (nameElement && nameElement.textContent === '') {
+                    nameElement.textContent = storedName;
+                }
+            }
+        });
+    };
+    
+    const addCommentIdAttributes = () => {
+        const comments = {{ comments | dump | safe }};
+        if (comments && comments.list_comments) {
+            const commentElements = document.querySelectorAll('#comments-container .bg-white');
+            comments.list_comments.forEach((comment, index) => {
+                if (index < commentElements.length) {
+                    commentElements[index].dataset.commentId = comment._id;
+                    
+                    const nameElement = commentElements[index].querySelector('.font-bold');
+                    if (nameElement && !nameElement.textContent.trim()) {
+                        nameElement.textContent = getCommentAuthor(comment._id);
+                    }
+                }
+            });
+        }
+    };
+    
+    addCommentIdAttributes();
+    applyStoredAuthorNames();
+    
     if (commentForm) {
         commentForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const fullname = document.getElementById('fullname').value;
-            const email = document.getElementById('email').value;
             const content = document.getElementById('content').value;
             const articleId = document.getElementById('article-id').value;
             
             try {
-
                 commentStatus.textContent = 'Envoi en cours...';
                 commentStatus.classList.remove('hidden', 'text-red-500');
                 commentStatus.classList.add('text-gray-500');
@@ -208,7 +244,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     body: JSON.stringify({
                         fullname,
-                        email,
                         content
                     })
                 });
@@ -218,6 +253,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
                 const result = await response.json();
+                
+                if (result && result._id) {
+                    storeCommentAuthor(result._id, fullname);
+                }
 
                 const newComment = document.importNode(commentTemplate.content, true);
                 newComment.querySelector('[data-comment-fullname]').textContent = fullname;
@@ -227,6 +266,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 const formattedDate = now.toLocaleDateString('fr-FR');
                 newComment.querySelector('[data-comment-date]').textContent = formattedDate;
                 newComment.querySelector('[data-comment-date]').setAttribute('datetime', now.toISOString());
+                
+                const newCommentElement = newComment.querySelector('.bg-white');
+                if (newCommentElement && result && result._id) {
+                    newCommentElement.dataset.commentId = result._id;
+                }
                 
                 if (noCommentsMessage) {
                     noCommentsMessage.style.display = 'none';
