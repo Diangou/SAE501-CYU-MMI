@@ -1,9 +1,7 @@
 {% extends "layouts/front-end/base.njk" %}
 
-{% set bubble_color = bubble_color | default("bleu") %}
-{% if bubble_border_color %}
-    {% set bubble_border_color = bubble_border_color %}
-{% endif %}
+{% set bubble_color = "violet" %}
+
 
 {% block title %}
     {% if article %}{{ article.title }}{% else %}Article non trouvé{% endif %}

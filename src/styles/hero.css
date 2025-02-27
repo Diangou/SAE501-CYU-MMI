@@ -101,6 +101,10 @@
         background-color: #011d37;
     }
 
+    &.violet {
+        background-color: #F7EBFF;
+    }
+
     &.gris {
         background-color: #6a6a6a;
     }
@@ -141,6 +145,10 @@
 
     &.bleu {
         background-color: #00a2ff;
+    }
+
+    &.violet {
+        background-color: #DB9FFF;
     }
 
     &.gris {
