@@ -19,7 +19,7 @@ router.get(`/${base}`, routeName("article_list"), async (req, res) => {
 
     try {
         result = await axios(options);
-    } catch {}
+    } catch { }
 
 
     const successMessage = req.session.successMessage || null;
@@ -27,7 +27,7 @@ router.get(`/${base}`, routeName("article_list"), async (req, res) => {
 
     res.render("pages/back-end/articles/list.njk", {
         list_articles: result.data,
-        messages: { success: successMessage }, 
+        messages: { success: successMessage },
     });
 });
 
@@ -36,38 +36,38 @@ router.get(`/${base}`, routeName("article_list"), async (req, res) => {
 router
     .route([`/${base}/:id`, `/${base}/add`])
     .get(routeName("article_form"), async (req, res) => {
-    const isEdit = req.params.id !== "add";
+        const isEdit = req.params.id !== "add";
 
-    let result = {};
-    let listErrors = [];
-    let listAuthors = [];
+        let result = {};
+        let listErrors = [];
+        let listAuthors = [];
 
-    try {
-        if (isEdit) {
-            const options = {
+        try {
+            if (isEdit) {
+                const options = {
+                    method: "GET",
+                    url: `${res.locals.base_url}/api/${base}/${req.params.id}`,
+                };
+                result = await axios(options);
+            }
+
+            // Fetch authors for selection
+            const authorsResponse = await axios({
                 method: "GET",
-                url: `${res.locals.base_url}/api/${base}/${req.params.id}`,
-            };
-            result = await axios(options);
+                url: `${res.locals.base_url}/api/authors`,
+            });
+            listAuthors = authorsResponse.data.data;
+        } catch (error) {
+            listErrors = error.response?.data?.errors || [];
         }
 
-        // Fetch authors for selection
-        const authorsResponse = await axios({
-            method: "GET",
-            url: `${res.locals.base_url}/api/authors`,
+        res.render("pages/back-end/articles/add-edit.njk", {
+            article: result?.data || {},
+            list_errors: listErrors,
+            list_authors: listAuthors,
+            is_edit: isEdit,
         });
-        listAuthors = authorsResponse.data.data;
-    } catch (error) {
-        listErrors = error.response?.data?.errors || [];
-    }
-
-    res.render("pages/back-end/articles/add-edit.njk", {
-        article: result?.data || {},
-        list_errors: listErrors,
-        list_authors: listAuthors,
-        is_edit: isEdit,
     });
-});
 
 // Create or update article
 router.post([`/${base}/:id`, `/${base}/add`], upload.single("image"), async (req, res) => {
@@ -97,12 +97,12 @@ router.post([`/${base}/:id`, `/${base}/add`], upload.single("image"), async (req
         });
         listAuthors = authorsResponse.data.data;
 
-        // ✅ Stocke temporairement le message dans la session
+
         req.session.successMessage = isEdit
             ? "L'article a bien été modifié !"
             : "L'article a bien été ajouté !";
 
-        // ✅ Redirige vers la liste après succès
+
         res.redirect(`${res.locals.admin_url}/${base}`);
 
     } catch (e) {
@@ -114,7 +114,7 @@ router.post([`/${base}/:id`, `/${base}/add`], upload.single("image"), async (req
             list_errors: listErrors,
             list_authors: listAuthors,
             is_edit: isEdit,
-            messages: { success: req.session.successMessage || null },  
+            messages: { success: req.session.successMessage || null },
         });
     }
 });

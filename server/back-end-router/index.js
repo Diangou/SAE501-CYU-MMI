@@ -10,8 +10,12 @@ import SAERouter from "./sae.js";
 import articleRouter from "./article.js";
 import messageRouter from "./message.js";
 import authorRouter from "./author.js";
+import diversRouter from "./divers.js";
 
 const router = express.Router();
+
+router.use("/divers", diversRouter);
+
 
 router.use(async (_req, res, next) => {
     const originalRender = res.render;
