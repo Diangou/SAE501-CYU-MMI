@@ -2,6 +2,8 @@ import "/src/styles/base.css";
 import "/src/styles/scroll-shadow.css";
 import "/src/styles/tailwind.css";
 import "/src/styles/back-end/index.css";
+import "/src/styles/back-end/theme-variables.css";
+import "/src/styles/back-end/theme-selector.css";
 
 import "./back-end/delete-entry-modal.js";
 import "./back-end/preview-upload.js";
@@ -14,6 +16,7 @@ import "./back-end/preview-modal.js";
 import "./back-end/display-pagination-shortcut.js";
 import "./back-end/tooltip-manager.js";
 import "./back-end/breadcrumb-modal.js";
+import "./back-end/theme-manager.js";
 import "/src/scripts/store-scroll-position.utils";
 import "/public/js/compteur_caracteres.js";
 

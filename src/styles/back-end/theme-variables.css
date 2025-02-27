@@ -1,0 +1,89 @@
+:root {
+    --theme-main: #3b82f6;          
+    --theme-light: #dbeafe;
+    --theme-bg: #bfdbfe;
+}
+
+.bg-theme-main {
+    background-color: var(--theme-main) !important;
+}
+
+.bg-theme-light {
+    background-color: var(--theme-light) !important;
+}
+
+.bg-theme-bg {
+    background-color: var(--theme-bg) !important;
+}
+
+.text-theme-main {
+    color: var(--theme-main) !important;
+}
+
+.border-theme-main {
+    border-color: var(--theme-main) !important;
+}
+
+[data-theme] .bg-blue-500,
+[data-theme] .bg-blue-600,
+[data-theme] .bg-blue-700,
+[data-theme] .hover\:bg-blue-600:hover,
+[data-theme] .hover\:bg-blue-700:hover,
+[data-theme] .active\:bg-blue-700:active {
+    background-color: var(--theme-main) !important;
+}
+
+[data-theme] .bg-blue-50,
+[data-theme] .bg-blue-100,
+[data-theme] .hover\:bg-blue-50:hover {
+    background-color: var(--theme-light) !important;
+}
+
+[data-theme] .bg-blue-200,
+[data-theme] .bg-blue-300 {
+    background-color: var(--theme-bg) !important;
+}
+
+[data-theme] .text-blue-500,
+[data-theme] .text-blue-600,
+[data-theme] .text-blue-700,
+[data-theme] .hover\:text-blue-600:hover,
+[data-theme] .hover\:text-blue-700:hover {
+    color: var(--theme-main) !important;
+}
+
+[data-theme] .border-blue-500,
+[data-theme] .border-blue-600,
+[data-theme] .border-blue-700,
+[data-theme] .hover\:border-blue-600:hover,
+[data-theme] .focus\:border-blue-500:focus,
+[data-theme] .focus\:ring-blue-500:focus {
+    border-color: var(--theme-main) !important;
+}
+
+[data-theme] .ring-blue-500,
+[data-theme] .focus\:ring-blue-500:focus {
+    --tw-ring-color: var(--theme-main) !important;
+}
+
+[data-theme] .sidebar-link.active, 
+[data-theme] .btn-primary,
+[data-theme] .bg-primary {
+    background-color: var(--theme-main) !important;
+    color: white !important;
+}
+
+[data-theme] .btn-outline-primary {
+    border-color: var(--theme-main) !important;
+    color: var(--theme-main) !important;
+}
+
+[data-theme] .btn-outline-primary:hover {
+    background-color: var(--theme-light) !important;
+}
+
+[data-theme] .form-control:focus {
+    border-color: var(--theme-main) !important;
+    box-shadow: 0 0 0 0.2rem rgba(var(--theme-main-rgb, 59, 130, 246), 0.25) !important;
+}
+

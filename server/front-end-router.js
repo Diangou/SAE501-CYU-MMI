@@ -1,13 +1,12 @@
 import express from "express";
 import axios from "axios";
-import { Types } from 'mongoose'; // Si tu utilises Mongoose
+import { Types } from 'mongoose'; 
 
 
 
 import routeName from "#server/utils/name-route.middleware.js";
 import parseManifest from "#server/utils/parse-manifest.js";
-import Author from "#database/models/author.js"; // Assure-toi que le chemin est correct
-
+import Author from "#database/models/author.js"; 
 
 const router = express.Router();
 
@@ -108,7 +107,6 @@ router.get("/article-details/:id", routeName("article-details"), async (req, res
 
         const response = await axios(options);
         const article = response.data;
-
         
         const commentsOptions = {
             method: "GET",
@@ -119,12 +117,10 @@ router.get("/article-details/:id", routeName("article-details"), async (req, res
         try {
             const commentsResponse = await axios(commentsOptions);
             comments = commentsResponse.data;
-            console.log("Comments data:", JSON.stringify(comments, null, 2));
         } catch (error) {
-            console.error("Error fetching comments:", error);
+            console.error(`Error fetching comments for article ${id}: ${error.message}`);
         }
-
-    
+        
         if (comments && !comments.list_comments && comments.data) {
             comments.list_comments = comments.data;
         }
