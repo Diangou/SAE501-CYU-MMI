@@ -53,36 +53,47 @@ const base = "articles";
  */
 router.post([`/${base}/:id([a-f0-9]{24})/comments`, `/${base}/:slug([\\w\\d\\-]+\\-[a-f0-9]{24})/comments`], async (req, res) => {
     try {
-        const searchKey = req.params.id ? "_id" : "slug";
-        const searchParam = req.params?.id || req.params.slug;
-
-        const [article] = await Article.find({ [searchKey]: searchParam });
+        const { id, slug } = req.params;
+        const { content, fullname } = req.body;  // Make sure to extract fullname from request body
+        
+        // Find the article by id or slug
+        const searchKey = id ? "_id" : "slug";
+        const searchParam = id ? mongoose.Types.ObjectId.createFromHexString(id) : slug;
+        
+        const article = await Article.findOne({ [searchKey]: searchParam });
+        
         if (!article) {
-            throw new mongoose.Error.DocumentNotFoundError();
+            return res.status(404).json({
+                errors: [`L'article n'existe pas`],
+            });
         }
-        const ressource = new CommentArticle({ ...req.body, article });
-        await ressource.save();
-
-        article.list_comments.push(ressource);
+        
+        // Create a new comment with the fullname field
+        const comment = new CommentArticle({
+            article: article._id,
+            content,
+            fullname,  // Store the fullname field
+            created_at: new Date(),
+        });
+        
+        // Save the comment
+        await comment.save();
+        
+        // Add the comment to the article's list of comments
+        article.list_comments = article.list_comments || [];
+        article.list_comments.push(comment._id);
         await article.save();
-
-        res.status(201).json(ressource.getClean());
+        
+        res.status(201).json(comment);
     } catch (err) {
-        if (err instanceof mongoose.Error.DocumentNotFoundError) {
-            res.status(404).json({
-                errors: [`L'article "${req.params.id}" n'existe pas`],
-            });
-        } else if (err instanceof mongoose.Error.CastError) {
-            res.status(400).json({
-                errors: [`"${req.params.id}" n'est pas un _id valide`],
-            });
-        } else {
-            res.status(400).json({
-                errors: [
-                    ...Object.values(err?.errors || [{ message: "Il y a eu un problème" }]).map(val => val.message),
-                ],
-            });
-        }
+        console.error('Error adding comment:', err);
+        res.status(400).json({
+            errors: [
+                ...Object.values(
+                    err?.errors || [{ message: "Il y a eu un problème" }]
+                ).map(val => val.message),
+            ],
+        });
     }
 });
 

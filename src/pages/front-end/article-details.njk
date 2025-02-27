@@ -1,13 +1,300 @@
 {% extends "layouts/front-end/base.njk" %}
 
-{% set bubble_color = "bleu" %}
+{% set bubble_color = bubble_color | default("bleu") %}
+{% if bubble_border_color %}
+    {% set bubble_border_color = bubble_border_color %}
+{% endif %}
 
-
-{% block title %}Lieux de vie
+{% block title %}
+    {% if article %}{{ article.title }}{% else %}Article non trouvé{% endif %}
 {% endblock %}
 
 {% block main %}
 
-<h1 class="text-3xl font-bold lg:col-span-2 mt-6 lg:mt-0">Lieux de Vie</h1>
+{% if article %}
+<div class="reading-progress-container">
+    <div class="reading-progress-bar"></div>
+</div>
+{% endif %}
 
+<div class="container mx-auto px-4 py-6">
+    <button onclick="window.history.back()" class="mb-6 inline-flex items-center text-blue-600 hover:text-blue-800">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Retour
+    </button>
+    
+    {% if error %}
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+            {{ error }}
+        </div>
+    {% elif article %}
+        <article class="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
+ 
+            <header class="relative">
+                {% if article.image %}
+                    <div class="w-full h-[300px] md:h-[400px] bg-gray-200">
+                        <img src="/uploads/{{ article.image }}" alt="{{ article.title }}" class="w-full h-full object-cover">
+                    </div>
+                {% endif %}
+                
+                <div class="p-6 pb-4">
+                    <h1 class="text-3xl md:text-4xl font-bold mb-4">{{ article.title }}</h1>
+                    
+                    {% if article.chapo %}
+                    <div class="text-lg font-medium text-gray-700 mb-6 border-l-4 border-blue-500 pl-4">
+                        {{ article.chapo }}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="flex items-center text-gray-600 mb-4">
+                        <time datetime="{{ article.created_at }}" class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            {{ article.created_at|date("dd/LL/yyyy") }}
+                        </time>
+                        
+                        {% if article.updated_at and article.updated_at != article.created_at %}
+                        <span class="mx-2">•</span>
+                        <span class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                            Mis à jour le {{ article.updated_at|date("dd/LL/yyyy") }}
+                        </span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="flex items-center mb-6">
+                        <a href="/auteur-details/{% if article.author %}{{ article.author._id }}{% endif %}" class="flex items-center group">
+                            {% if article.author and article.author.image %}
+                            <img src="/uploads/{{ article.author.image }}" alt="{{ article.author.firstname }} {{ article.author.lastname }}" class="w-10 h-10 rounded-full mr-3">
+                            {% else %}
+                            <div class="w-10 h-10 rounded-full bg-gray-300 mr-3 flex items-center justify-center">
+                                <span class="text-gray-600 font-bold">
+                                    {% if article.author %}
+                                        {{ article.author.firstname[0] }}{{ article.author.lastname[0] }}
+                                    {% else %}
+                                        LA
+                                    {% endif %}
+                                </span>
+                            </div>
+                            {% endif %}
+                            <span class="text-blue-600 group-hover:text-blue-800">
+                                {% if article.author %}
+                                    {{ article.author.firstname }} {{ article.author.lastname }}
+                                {% else %}
+                                    La rédaction
+                                {% endif %}
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="px-6 pb-8">
+
+                {% if youtube_url %}
+                <div class="mt-4 mb-6">
+                    <a href="{{ youtube_url }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-red-600 hover:text-red-700" onclick="event.stopPropagation();">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                        </svg>
+                        Voir sur YouTube
+                    </a>
+                </div>
+                {% endif %}
+                
+                <div class="prose max-w-none">
+                    {{ article.content | safe }}
+                </div>
+            </div>
+        </article>
+        
+        <section class="bg-gray-100 rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-6">Commentaires ({{ comments.count | default(0) }})</h2>
+
+            <form id="comment-form" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6">
+                <input type="hidden" id="article-id" value="{{ article._id }}">
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-bold mb-2" for="fullname">
+                        Nom complet
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fullname" type="text" placeholder="Votre nom" required>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-bold mb-2" for="content">
+                        Commentaire
+                    </label>
+                    <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="content" rows="4" placeholder="Votre commentaire" required></textarea>
+                </div>
+                
+                <div class="flex items-center justify-between">
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                        Publier
+                    </button>
+                    <p id="comment-status" class="hidden"></p>
+                </div>
+            </form>
+
+            <div id="comments-container" class="space-y-4">
+                {% if (comments.list_comments and comments.list_comments.length > 0) or (comments.data and comments.data.length > 0) %}
+                    {% set commentsList = comments.list_comments if comments.list_comments else comments.data %}
+                    {% for comment in commentsList %}
+                        <div class="bg-white rounded-lg shadow p-4">
+                            <div class="flex justify-between items-start mb-2">
+                                <div class="font-bold">{{ comment.fullname }}</div>
+                                <time class="text-sm text-gray-500" datetime="{{ comment.created_at }}">{{ comment.created_at|date("dd/LL/yyyy") }}</time>
+                            </div>
+                            <p>{{ comment.content }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p id="no-comments-message" class="text-gray-500">Aucun commentaire pour le moment.</p>
+                {% endif %}
+            </div>
+        </section>
+    {% endif %}
+</div>
+
+<template id="comment-template">
+    <div class="bg-white rounded-lg shadow p-4">
+        <div class="flex justify-between items-start mb-2">
+            <div class="font-bold" data-comment-fullname></div>
+            <time class="text-sm text-gray-500" data-comment-date></time>
+        </div>
+        <p data-comment-content></p>
+    </div>
+</template>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const commentForm = document.getElementById('comment-form');
+    const commentsContainer = document.getElementById('comments-container');
+    const commentTemplate = document.getElementById('comment-template');
+    const commentStatus = document.getElementById('comment-status');
+    const noCommentsMessage = document.getElementById('no-comments-message');
+    
+    const storeCommentAuthor = (commentId, fullname) => {
+        const storedAuthors = JSON.parse(localStorage.getItem('commentAuthors') || '{}');
+        storedAuthors[commentId] = fullname;
+        localStorage.setItem('commentAuthors', JSON.stringify(storedAuthors));
+    };
+    
+    const getCommentAuthor = (commentId) => {
+        const storedAuthors = JSON.parse(localStorage.getItem('commentAuthors') || '{}');
+        return storedAuthors[commentId] || 'Anonyme';
+    };
+    
+    const applyStoredAuthorNames = () => {
+        const commentsList = document.querySelectorAll('#comments-container .bg-white');
+        commentsList.forEach(comment => {
+            const commentId = comment.dataset.commentId;
+            if (commentId) {
+                const storedName = getCommentAuthor(commentId);
+                const nameElement = comment.querySelector('.font-bold');
+                if (nameElement && nameElement.textContent === '') {
+                    nameElement.textContent = storedName;
+                }
+            }
+        });
+    };
+    
+    const addCommentIdAttributes = () => {
+        const comments = {{ comments | dump | safe }};
+        if (comments && comments.list_comments) {
+            const commentElements = document.querySelectorAll('#comments-container .bg-white');
+            comments.list_comments.forEach((comment, index) => {
+                if (index < commentElements.length) {
+                    commentElements[index].dataset.commentId = comment._id;
+                    
+                    const nameElement = commentElements[index].querySelector('.font-bold');
+                    if (nameElement && !nameElement.textContent.trim()) {
+                        nameElement.textContent = getCommentAuthor(comment._id);
+                    }
+                }
+            });
+        }
+    };
+    
+    addCommentIdAttributes();
+    applyStoredAuthorNames();
+    
+    if (commentForm) {
+        commentForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const fullname = document.getElementById('fullname').value;
+            const content = document.getElementById('content').value;
+            const articleId = document.getElementById('article-id').value;
+            
+            try {
+                commentStatus.textContent = 'Envoi en cours...';
+                commentStatus.classList.remove('hidden', 'text-red-500');
+                commentStatus.classList.add('text-gray-500');
+                
+                const response = await fetch(`/api/articles/${articleId}/comments`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        fullname,
+                        content
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Erreur lors de l\'envoi du commentaire');
+                }
+                
+                const result = await response.json();
+                
+                if (result && result._id) {
+                    storeCommentAuthor(result._id, fullname);
+                }
+
+                const newComment = document.importNode(commentTemplate.content, true);
+                newComment.querySelector('[data-comment-fullname]').textContent = fullname;
+                newComment.querySelector('[data-comment-content]').textContent = content;
+                
+                const now = new Date();
+                const formattedDate = now.toLocaleDateString('fr-FR');
+                newComment.querySelector('[data-comment-date]').textContent = formattedDate;
+                newComment.querySelector('[data-comment-date]').setAttribute('datetime', now.toISOString());
+                
+                const newCommentElement = newComment.querySelector('.bg-white');
+                if (newCommentElement && result && result._id) {
+                    newCommentElement.dataset.commentId = result._id;
+                }
+                
+                if (noCommentsMessage) {
+                    noCommentsMessage.style.display = 'none';
+                }
+
+                commentsContainer.insertBefore(newComment, commentsContainer.firstChild);
+                
+                commentForm.reset();
+                commentStatus.textContent = 'Commentaire ajouté avec succès!';
+                commentStatus.classList.remove('text-gray-500', 'text-red-500');
+                commentStatus.classList.add('text-green-500');
+                
+                setTimeout(() => {
+                    commentStatus.classList.add('hidden');
+                }, 3000);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                commentStatus.textContent = 'Erreur: ' + error.message;
+                commentStatus.classList.remove('text-gray-500', 'hidden');
+                commentStatus.classList.add('text-red-500');
+            }
+        });
+    }
+});
+</script>
 {% endblock %}
