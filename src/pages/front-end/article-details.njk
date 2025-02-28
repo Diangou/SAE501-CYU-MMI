@@ -114,7 +114,7 @@
         </article>
         
         <section class="bg-gray-100 rounded-lg shadow-md p-6 mb-8">
-            <h2 class="text-2xl font-bold mb-6">Commentaires ({{ comments.count | default(0) }})</h2>
+            <h2 class="text-2xl font-bold mb-6">Commentaires </h2>
 
             <form id="comment-form" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6">
                 <input type="hidden" id="article-id" value="{{ article._id }}">
@@ -179,86 +179,85 @@ document.addEventListener('DOMContentLoaded', function() {
     const commentStatus = document.getElementById('comment-status');
     const noCommentsMessage = document.getElementById('no-comments-message');
     
-    const storeCommentAuthor = (commentId, fullname) => {
-        const storedAuthors = JSON.parse(localStorage.getItem('commentAuthors') || '{}');
-        storedAuthors[commentId] = fullname;
-        localStorage.setItem('commentAuthors', JSON.stringify(storedAuthors));
-    };
-    
-    const getCommentAuthor = (commentId) => {
-        const storedAuthors = JSON.parse(localStorage.getItem('commentAuthors') || '{}');
-        return storedAuthors[commentId] || 'Anonyme';
-    };
-    
-    const applyStoredAuthorNames = () => {
-        const commentsList = document.querySelectorAll('#comments-container .bg-white');
-        commentsList.forEach(comment => {
-            const commentId = comment.dataset.commentId;
-            if (commentId) {
-                const storedName = getCommentAuthor(commentId);
-                const nameElement = comment.querySelector('.font-bold');
-                if (nameElement && nameElement.textContent === '') {
-                    nameElement.textContent = storedName;
-                }
-            }
-        });
-    };
-    
-    const addCommentIdAttributes = () => {
-        const comments = {{ comments | dump | safe }};
-        if (comments && comments.list_comments) {
-            const commentElements = document.querySelectorAll('#comments-container .bg-white');
-            comments.list_comments.forEach((comment, index) => {
-                if (index < commentElements.length) {
-                    commentElements[index].dataset.commentId = comment._id;
-                    
-                    const nameElement = commentElements[index].querySelector('.font-bold');
-                    if (nameElement && !nameElement.textContent.trim()) {
-                        nameElement.textContent = getCommentAuthor(comment._id);
-                    }
-                }
-            });
-        }
-    };
-    
-    addCommentIdAttributes();
-    applyStoredAuthorNames();
-    
     if (commentForm) {
-        commentForm.addEventListener('submit', async function(e) {
+        // Charge les commentaires stockés localement au chargement de la page
+        const loadLocalComments = () => {
+            const articleId = document.getElementById('article-id').value;
+            const localComments = JSON.parse(localStorage.getItem(`comments-${articleId}`) || '[]');
+            
+            if (localComments.length > 0 && noCommentsMessage) {
+                noCommentsMessage.style.display = 'none';
+            }
+            
+            localComments.forEach(comment => {
+                const newComment = document.importNode(commentTemplate.content, true);
+                const commentElement = newComment.querySelector('.bg-white') || newComment.firstElementChild;
+                if (commentElement) {
+                    commentElement.setAttribute('data-comment-id', comment.id);
+                }
+                
+                newComment.querySelector('[data-comment-fullname]').textContent = comment.fullname;
+                newComment.querySelector('[data-comment-content]').textContent = comment.content;
+                newComment.querySelector('[data-comment-date]').textContent = new Date(comment.date).toLocaleDateString('fr-FR');
+                newComment.querySelector('[data-comment-date]').setAttribute('datetime', comment.date);
+                
+                // Ajoute un indicateur si le commentaire a été modifié
+                if (comment.edited && newComment.querySelector('[data-comment-fullname]')) {
+                    const editedBadge = document.createElement('span');
+                    editedBadge.className = 'edited-badge text-xs text-gray-500 ml-2';
+                    editedBadge.textContent = '(modifié)';
+                    newComment.querySelector('[data-comment-fullname]').appendChild(editedBadge);
+                }
+                
+                commentsContainer.insertBefore(newComment, commentsContainer.firstChild);
+            });
+        };
+        
+        loadLocalComments();
+        
+        // Gestion de la soumission du formulaire de commentaire
+        commentForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
             const fullname = document.getElementById('fullname').value;
             const content = document.getElementById('content').value;
             const articleId = document.getElementById('article-id').value;
             
+            // Validation des champs obligatoires
+            if (!fullname || !content) {
+                commentStatus.textContent = 'Veuillez remplir tous les champs';
+                commentStatus.classList.remove('hidden', 'text-gray-500', 'text-green-500');
+                commentStatus.classList.add('text-red-500');
+                return;
+            }
+            
             try {
                 commentStatus.textContent = 'Envoi en cours...';
                 commentStatus.classList.remove('hidden', 'text-red-500');
                 commentStatus.classList.add('text-gray-500');
                 
-                const response = await fetch(`/api/articles/${articleId}/comments`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        fullname,
-                        content
-                    })
-                });
+                // Création d'un identifiant unique pour le commentaire local
+                const newCommentId = 'local-' + Date.now();
                 
-                if (!response.ok) {
-                    throw new Error('Erreur lors de l\'envoi du commentaire');
-                }
+                const newCommentObj = {
+                    id: newCommentId,
+                    fullname: fullname,
+                    content: content,
+                    date: new Date().toISOString()
+                };
                 
-                const result = await response.json();
+                // Sauvegarde dans le stockage local
+                const localComments = JSON.parse(localStorage.getItem(`comments-${articleId}`) || '[]');
+                localComments.unshift(newCommentObj);
+                localStorage.setItem(`comments-${articleId}`, JSON.stringify(localComments));
                 
-                if (result && result._id) {
-                    storeCommentAuthor(result._id, fullname);
-                }
-
+                // Ajout du commentaire dans le DOM
                 const newComment = document.importNode(commentTemplate.content, true);
+                const commentElement = newComment.querySelector('.bg-white') || newComment.firstElementChild;
+                if (commentElement) {
+                    commentElement.setAttribute('data-comment-id', newCommentId);
+                }
+                
                 newComment.querySelector('[data-comment-fullname]').textContent = fullname;
                 newComment.querySelector('[data-comment-content]').textContent = content;
                 
@@ -267,17 +266,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 newComment.querySelector('[data-comment-date]').textContent = formattedDate;
                 newComment.querySelector('[data-comment-date]').setAttribute('datetime', now.toISOString());
                 
-                const newCommentElement = newComment.querySelector('.bg-white');
-                if (newCommentElement && result && result._id) {
-                    newCommentElement.dataset.commentId = result._id;
-                }
-                
                 if (noCommentsMessage) {
                     noCommentsMessage.style.display = 'none';
                 }
-
+                
                 commentsContainer.insertBefore(newComment, commentsContainer.firstChild);
                 
+                // Réinitialisation et message de confirmation
                 commentForm.reset();
                 commentStatus.textContent = 'Commentaire ajouté avec succès!';
                 commentStatus.classList.remove('text-gray-500', 'text-red-500');
@@ -294,6 +289,72 @@ document.addEventListener('DOMContentLoaded', function() {
                 commentStatus.classList.add('text-red-500');
             }
         });
+        
+        // Configuration des actions de modification et suppression des commentaires
+        const setupCommentActions = () => {
+            // Gestion de la suppression des commentaires
+            document.querySelectorAll('.delete-comment').forEach(button => {
+                button.addEventListener('click', function() {
+                    const commentId = this.dataset.commentId;
+                    const articleId = document.getElementById('article-id').value;
+                    
+                    // Vérifie que c'est bien un commentaire local
+                    if (!commentId || !commentId.startsWith('local-')) return;
+                    
+                    if (confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?')) {
+                        const comments = JSON.parse(localStorage.getItem(`comments-${articleId}`) || '[]');
+                        const updatedComments = comments.filter(comment => comment.id !== commentId);
+                        localStorage.setItem(`comments-${articleId}`, JSON.stringify(updatedComments));
+                        
+                        const commentElement = this.closest('.comment-item');
+                        if (commentElement) {
+                            commentElement.remove();
+                            
+                            // Affiche le message "Aucun commentaire" si nécessaire
+                            if (commentsContainer.children.length === 0 && noCommentsMessage) {
+                                noCommentsMessage.style.display = 'block';
+                            }
+                        }
+                    }
+                });
+            });
+            
+            // Gestion de l'édition des commentaires
+            document.querySelectorAll('.edit-comment').forEach(button => {
+                button.addEventListener('click', function() {
+                    const commentId = this.dataset.commentId;
+                    const articleId = document.getElementById('article-id').value;
+                    
+                    if (!commentId || !commentId.startsWith('local-')) return;
+                    
+                    const comments = JSON.parse(localStorage.getItem(`comments-${articleId}`) || '[]');
+                    const comment = comments.find(c => c.id === commentId);
+                    
+                    if (comment) {
+                        const newContent = prompt('Modifier votre commentaire:', comment.content);
+                        if (newContent !== null && newContent.trim() !== '') {
+                            comment.content = newContent.trim();
+                            comment.edited = true;
+                            localStorage.setItem(`comments-${articleId}`, JSON.stringify(comments));
+                            
+                            const commentElement = this.closest('.comment-item');
+                            if (commentElement) {
+                                commentElement.querySelector('[data-comment-content]').textContent = newContent.trim();
+                                // Ajoute l'indicateur de modification si nécessaire
+                                if (!commentElement.querySelector('.edited-badge')) {
+                                    const editedBadge = document.createElement('span');
+                                    editedBadge.className = 'edited-badge text-xs text-gray-500 ml-2';
+                                    editedBadge.textContent = '(modifié)';
+                                    commentElement.querySelector('[data-comment-fullname]').appendChild(editedBadge);
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        };
+        
+        setupCommentActions();
     }
 });
 </script>
