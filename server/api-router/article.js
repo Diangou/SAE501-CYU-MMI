@@ -4,6 +4,7 @@ import querystring from "querystring";
 
 import Article from "#models/article.js";
 import Author from "#models/author.js";
+import CommentArticle from "#database/models/comment-article.js";
 
 import upload, { uploadImage, deleteUpload } from "#server/uploader.js";
 import mongoose from "mongoose";
@@ -477,20 +478,27 @@ router.delete([`/${base}/:id([a-f0-9]{24})`, `/${base}/:slug([\\w\\d\\-]+\\-[a-f
     try {
         const searchKey = req.params.id ? "_id" : "slug";
         const searchParam = req.params?.id || req.params.slug;
-        const ressource = await Article.findOneAndDelete({ [searchKey]: searchParam });
-
+        
+        const article = await Article.findOne({ [searchKey]: searchParam });
+        
+        if (!article) {
+            return res.status(404).json({
+                errors: [`L'article "${req.params?.id || req.params.slug}" n'existe pas`],
+            });
+        }
+        
+        await CommentArticle.deleteMany({ article: article._id });
+        
+        const ressource = await Article.findByIdAndDelete(article._id);
+        
         if (ressource?.image) {
             const targetPath = `${res.locals.upload_path}${ressource.image}`;
             fs.unlink(targetPath, () => {});
         }
-
-        if (ressource) {
-            req.flash("success", "Element supprimé");
-            return res.status(200).json(ressource);
-        }
-        return res.status(404).json({
-            errors: [`L'article "${req.params?.id || req.params.slug}" n'existe pas`],
-        });
+        
+        req.flash("success", "Element supprimé");
+        return res.status(200).json(ressource);
+        
     } catch (_error) {
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
             return res.status(400).json({

@@ -15,7 +15,7 @@
         <ul class="flex md:flex-row sm:landscape:flex-col flex-col lg:flex-col gap-6">
           {% for item in list_articles.data %}
             <li>
-                 <a class="flex flex-col sm:max-lg:landscape:flex-row w-full shadow hocus:shadow-xl transition-shadow rounded-lg overflow-hidden" href="">
+                 <a class="flex flex-col sm:max-lg:landscape:flex-row w-full shadow hocus:shadow-xl transition-shadow rounded-lg overflow-hidden" href="/article-details/{{ item._id }}">
                     <div class="aspect-[25/14] overflow-hidden">
                         <img class="object-cover h-full w-full" src="{{ 'images/default-sae-image.png' if item.image|length == 0 else '/uploads/' ~ item.image }}" alt="">
                     </div>

@@ -6,8 +6,7 @@ import { getJpoData, updateJpoData } from "#server/utils/jpoManager.js";
 
 import routeName from "#server/utils/name-route.middleware.js";
 import parseManifest from "#server/utils/parse-manifest.js";
-import Author from "#database/models/author.js"; // Assure-toi que le chemin est correct
-
+import Author from "#database/models/author.js"; 
 
 const router = express.Router();
 
@@ -69,7 +68,7 @@ router.get("/", routeName("homepage"), async (req, res) => {
 });
 
 
-// "(.html)?" makes ".html" optional in the url
+
 router.get("/a-propos(.html)?", routeName("about"), async (_req, res) => {
     const options = {
         method: "GET",
@@ -100,8 +99,69 @@ router.get("/sur-les-medias", async (req, res) => {
 });
 
 
-router.get("/article-details", async (req, res) => {
-    res.render("pages/front-end/article-details.njk");
+router.get("/article-details/:id", routeName("article-details"), async (req, res) => {
+    const { id } = req.params;
+    
+    if (!id) {
+        return res.status(404).render("pages/front-end/article-details.njk", {
+            error: "Article non trouvé"
+        });
+    }
+
+    try {
+        const options = {
+            method: "GET",
+            url: `${res.locals.base_url}/api/articles/${id}`,
+        };
+
+        const response = await axios(options);
+        const article = response.data;
+        
+        const commentsOptions = {
+            method: "GET",
+            url: `${res.locals.base_url}/api/articles/${id}/comments`,
+        };
+
+        let comments = { data: [], total_pages: 1, count: 0 };
+        try {
+            const commentsResponse = await axios(commentsOptions);
+            comments = commentsResponse.data;
+        } catch (error) {
+            console.error(`Error fetching comments for article ${id}: ${error.message}`);
+        }
+        
+        if (comments && !comments.list_comments && comments.data) {
+            comments.list_comments = comments.data;
+        }
+        
+        let youtubeUrl = null;
+
+        if (article.yt_video_id && (article.yt_video_id.includes('youtube.com') || article.yt_video_id.includes('youtu.be'))) {
+            youtubeUrl = article.yt_video_id;
+            console.log("Using YouTube URL from yt_video_id:", youtubeUrl);
+        }
+ 
+        else if (article.yt_video_id && article.yt_video_id.trim() !== '') {
+            youtubeUrl = `https://www.youtube.com/watch?v=${article.yt_video_id}`;
+            console.log("Creating YouTube URL from video ID:", youtubeUrl);
+        }
+        
+        const bubbleColor = article.author?.color ? article.author.color : "bleu";
+        const bubbleBorderColor = article.author?.colorborder ? article.author.colorborder : null;
+
+        res.render("pages/front-end/article-details.njk", {
+            article,
+            comments,
+            youtube_url: youtubeUrl,
+            bubble_color: bubbleColor,
+            bubble_border_color: bubbleBorderColor
+        });
+    } catch (error) {
+        console.error("Error fetching article details:", error);
+        res.status(404).render("pages/front-end/article-details.njk", {
+            error: "Article non trouvé ou erreur lors de la récupération des données"
+        });
+    }
 });
 
 router.get("/auteur-details(.html)?", routeName("auteur-details"), async (_req, res) => {

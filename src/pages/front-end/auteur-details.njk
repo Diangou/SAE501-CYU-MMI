@@ -1,48 +1,49 @@
 {% extends "layouts/front-end/base-auteur.njk" %}
 
-
-{% import "components/back-end/list-actions.njk" as list_actions %}
-{% import "pages/back-end/auteurs/table.njk" as authors with context %}
-
-
-
-
 {% block title %}Détails de l'Auteur{% endblock %}
 
 {% block main %}
+
 <div class="container mx-auto px-4 py-10">
+    <button onclick="window.history.back()" class="mb-6 inline-flex items-center text-blue-600 hover:text-blue-800">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Retour
+    </button>
+
     {% if error %}
         <p class="text-red-500">{{ error }}</p>
     {% else %}
-        <div class="text-center mb-10">
-            <h1 class="text-4xl font-extrabold">Profil de l'Auteur</h1>
+        <!-- Header Section -->
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-extrabold text-gray-900 tracking-tight">Découvrez {{ author.firstname }} {{ author.lastname }}</h1>
+            <p class="text-xl text-gray-600 mt-3">Découvrez l'auteur et ses informations</p>
         </div>
 
-        <div class="bg-white shadow-md rounded-xl p-8 flex flex-col md:flex-row items-center md:items-start">
-            <img class="w-48 h-48 rounded-full border-4 border-gray-400 shadow-lg" 
-                src="/uploads/{{ author.image }}" 
-                alt="Photo de {{ author.firstname }} {{ author.lastname }}">
-            <div class="md:ml-8 text-center md:text-left mt-6 md:mt-0">
-                <h2 class="text-3xl font-bold text-gray-800">{{ author.firstname }} {{ author.lastname }}</h2>
-                <p class="text-gray-600 mt-4 leading-relaxed">{{ author.bio }}</p>
-            </div>
+        <!-- Author Profile Section -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
+            <header class="relative">
+                <!-- Image de l'auteur -->
+                <div class="w-full h-[300px] md:h-[400px] bg-gray-200">
+                    <img src="/uploads/{{ author.image }}" alt="Photo de {{ author.firstname }} {{ author.lastname }}" class="w-full h-full object-cover">
+                </div>
+
+                <div class="p-6 pb-4">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">{{ author.firstname }} {{ author.lastname }}</h2>
+                    <p class="text-lg font-medium text-gray-700 mb-6">{{ author.bio }}</p>
+                    <p class="text-gray-600 mb-4">{{ author.email }}</p>
+                    <p class="text-gray-600 font-semibold">Articles publiés : {{ author.list_articles | length }}</p>
+                    
+                    <div class="flex items-center mt-6">
+                        <a href="mailto:{{ author.email }}" class="text-blue-600 hover:text-blue-800 font-semibold">
+                            Contact
+                        </a>
+                    </div>
+                </div>
+            </header>
         </div>
 
-        <div class="mt-12">
-            <h2 class="text-2xl font-bold text-gray-800 border-b-2 pb-2">Articles de l'Auteur</h2>
-            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
-                {% if author.list_articles.length > 0 %}
-                    {% for article in author.list_articles %}
-                        <div class="bg-gray-100 p-4 rounded-md">
-                            <h3 class="text-lg font-bold">{{ article.title }}</h3>
-                            <p class="text-sm text-gray-600">{{ article.chapo }}</p>
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <p class="text-gray-500">Cet auteur n'a pas encore écrit d'articles.</p>
-                {% endif %}
-            </div>
-        </div>
     {% endif %}
 </div>
 {% endblock %}
