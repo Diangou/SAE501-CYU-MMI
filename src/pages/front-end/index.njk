@@ -11,7 +11,7 @@
 
 {% block main %}
     <section class="grid grid-cols-1 lg:grid-cols-[1fr_24rem] gap-x-6 gap-y-4 mb-6">
-        <h1 class="text-3xl font-bold lg:col-span-2 mt-6 lg:mt-0">Articles sur le BUT MMI</h1>
+        <h1 class="text-[2rem] lg:text-[2.5rem] font-bold lg:col-span-2 mt-6 lg:mt-0">Articles sur le BUT MMI</h1>
         <ul class="flex md:flex-row sm:landscape:flex-col flex-col lg:flex-col gap-6">
           {% for item in list_articles.data %}
             <li>
@@ -20,7 +20,7 @@
                         <img class="object-cover h-full w-full" src="{{ 'images/default-sae-image.png' if item.image|length == 0 else '/uploads/' ~ item.image }}" alt="">
                     </div>
                     <section class="p-8 pb-11">
-                        <h2 class="text-2xl font-bold">{{ item.title }}</h2>
+                        <h2 class="text-[1.5rem] font-bold">{{ item.title }}</h2>
                         <p>{{ item.content }}</p>
                         <p class="italic text-gray-600 mt-8 text-right">Par {% if item.author %}
                             {{ item.author.firstname }} {{ item.author.lastname }}
@@ -51,7 +51,7 @@
     </div>
 
     <!-- Affichage correct de la page actuelle -->
-    <p class="text-gray-600">
+    <p class="text-[1rem] text-gray-700">
         Page {{ currentPage }} sur {{ totalPages }} ({{ totalArticles }} articles)
     </p>
 </div>
@@ -66,8 +66,8 @@
         <img src="/images/logo-cyu-blanc.png" width="200" alt="">
     </div>
     <section class="textes">
-        <p class="text-2xl">Journée portes ouvertes</p>
-        <p class="text-4xl mb-3">
+        <p class="text-[1.5rem] lg:text-[2rem]">Journée portes ouvertes</p>
+        <p class="text-[2.25rem] lg:text-[2.5rem] mb-3">
             {{ jpo_date }},
             <br>
             de {{ jpo_time }}
