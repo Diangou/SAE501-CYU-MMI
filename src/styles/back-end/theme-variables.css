@@ -7,7 +7,6 @@
 .bg-theme-main {
     background-color: var(--theme-main) !important;
 }
-
 .bg-theme-light {
     background-color: var(--theme-light) !important;
 }
@@ -38,7 +37,6 @@
 [data-theme] .hover\:bg-blue-50:hover {
     background-color: var(--theme-light) !important;
 }
-
 [data-theme] .bg-blue-200,
 [data-theme] .bg-blue-300 {
     background-color: var(--theme-bg) !important;
@@ -60,7 +58,6 @@
 [data-theme] .focus\:ring-blue-500:focus {
     border-color: var(--theme-main) !important;
 }
-
 [data-theme] .ring-blue-500,
 [data-theme] .focus\:ring-blue-500:focus {
     --tw-ring-color: var(--theme-main) !important;
