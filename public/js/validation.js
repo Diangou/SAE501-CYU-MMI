@@ -3,6 +3,8 @@ import validator from "validator";
 
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.querySelector("form[data-async-form]");
+    if (!form) return; // Guard clause if form doesn't exist
+    
     const firstName = form.querySelector("input[name='firstName']");
     const lastName = form.querySelector("input[name='lastName']");
     const email = form.querySelector("input[name='email']");
@@ -77,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
             axios.post('api/messages', formData)
                 .then(response => {
                     // Afficher un message de succès
-                    feedback.textContent = "Votre message a été envoyé avec succès !";
+                    feedback.textContent = "Votre message a été envoyé avec succès !";
                     feedback.style.color = "green";
 
                     // Réinitialise le formulaire
@@ -87,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     // Afficher un message d'erreur
                     feedback.textContent = "Une erreur est survenue lors de l'envoi. Veuillez réessayer.";
                     feedback.style.color = "red";
-                    console.error("Erreur lors de la soumission :", error);
+                    console.error("Erreur lors de la soumission :", error);
                 })
                 .finally(() => {
                     // Réactive le bouton
